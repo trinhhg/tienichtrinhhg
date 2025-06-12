@@ -252,7 +252,7 @@ textarea {
 
 .word-count {
   font-size: 12px;
-  color: #333;
+  color: #6c757d; /* Màu xám nhạt */
   margin-top: 5px;
   margin-bottom: 5px; /* Khoảng cách nhỏ giữa đếm từ và nút */
   text-align: left;
