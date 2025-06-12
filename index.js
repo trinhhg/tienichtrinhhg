@@ -62,20 +62,20 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentLang = 'vn';
   let matchCaseEnabled = false;
   let currentMode = 'default';
-  let currentSplitMode = 2';
+  let currentSplitMode = 2; // Mặc định là Chia 2
   const LOCAL_STORAGE_KEY = 'local_settings';
 
   function escapeHtml(str) {
     try {
       if (typeof str !== 'string') return '';
       const htmlEntities = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
+        '&': '&',
+        '<': '<',
+        '>': '>',
+        '"': '"',
         "'": '\'' // Sửa lỗi: sử dụng ký tự nháy đơn thoát
       };
-      return str.replace(/[&<>"']/g, match => htmlEntities[match] || '');
+      return str.replace(/[&<>"']/g, match => htmlEntities[match] || match);
     } catch (error) {
       console.error('Lỗi trong escapeHtml:', error);
       return str || '';
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     currentLang = lang;
-    const elements = document.documentElement.lang = lang;
+    document.documentElement.lang = lang;
 
     const elements = {
       appTitle: document.getElementById('app-title'),
@@ -125,83 +125,79 @@ document.addEventListener('DOMContentLoaded', () => {
       copyButton4: document.getElementById('copy-button4'),
       exportSettings: document.getElementById('export-settings'),
       importSettings: document.getElementById('import-settings')
-    });
+    };
 
     try {
       if (elements.appTitle) elements.appTitle.textContent = translations[lang].appTitle;
-      if (elements.contactTextArea1) {
-        const textArea1 = elements.contactTextArea1.childNodes;
-        const textNode = Array.from().find(node => node.nodeType === Node.Text_NODE);
-        if (textNode) {
-          textNode.textContent = translations[lang].contactText;
-        }
+      if (elements.contactText1) {
+        const textNode = Array.from(elements.contactText1.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
+        if (textNode) textNode.textContent = translations[lang].contactText1;
+      }
       if (elements.contactText2) {
-        const textNode = Array.from(elements.contactText2.childNodes).find(node => node.nodeType === Node.Text_NODE);
-        if (textNode) {
-          textNode.textContent = translations[lang].contactText2;
-        }
-      });
+        const textNode = Array.from(elements.contactText2.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
+        if (textNode) textNode.textContent = translations[lang].contactText2;
+      }
       if (elements.settingsTab) elements.settingsTab.textContent = translations[lang].settingsTab;
-      if (elements.replaceTab) elements.replaceTabText.textContent = translations.replaceTab;
-      if (elements.splitTab) elements.splitTextTab.textContent = translations.splitTab;
-      if (elements.settingsTitle) elements.settingsTitle.textContent = translations.settingsTitle;
-      if (elements.modeLabel) elements.modeLabel.textContent = translations.modeLabel;
-      if (elements.addMode) elements.addMode.textContent = translations.addMode;
-      if (elements.copyMode) elements.copyMode.textContent = translations.copyMode;
+      if (elements.replaceTab) elements.replaceTab.textContent = translations[lang].replaceTab;
+      if (elements.splitTab) elements.splitTab.textContent = translations[lang].splitTab;
+      if (elements.settingsTitle) elements.settingsTitle.textContent = translations[lang].settingsTitle;
+      if (elements.modeLabel) elements.modeLabel.textContent = translations[lang].modeLabel;
+      if (elements.addMode) elements.addMode.textContent = translations[lang].addMode;
+      if (elements.copyMode) elements.copyMode.textContent = translations[lang].copyMode;
       if (elements.matchCase) elements.matchCase.textContent = matchCaseEnabled ? translations[lang].matchCaseOn : translations[lang].matchCaseOff;
       if (elements.findPlaceholder) elements.findPlaceholder.placeholder = translations[lang].findPlaceholder;
-      if (elements.replacePlaceholder) element.replacePlaceholder.placeholder = translations.replacePlaceholder;
-      if (elements.removeButton) elements.removeButton.textContent = translations.removeButton;
-      if (elements.addPair) elements.addPair.textContent = translations.addPair;
-      if (elements.saveSettings) elements.saveSettings.textContent = translations.saveSettings;
-      if (elements.replaceTitle) elements.replaceTitle.textContent = translations.replaceTitle;
-      if (elements.inputText) elements.inputText.placeholder = translations.inputText;
-      if (elements.replaceButton) elements.replaceButton.textContent = translations.replaceButton;
-      if (elements.outputText) elements.outputText.placeholder = translations.outputText;
-      if (elements.copyButton) elements.copyButton.textContent = translations.copyButton;
-      if (elements.splitTitle) elements.splitTitle.textContent = translations.splitTitle;
-      if (elements.splitInputText) elements.splitTextInputText.placeholder = translations.splitText;
-      if (elements.splitButton) elements.splitButton.textContent = translations.splitButton;
-      if (elements.outputText1) elements.textOutput1.placeholder = translations.textPlaceholder;
-      if (elements.outputText2) elements.textOutput2.placeholder = translations.textPlaceholder;
-      if (elements.outputText3) elements.textOutput3.placeholder = translations.text3;
-      if (elements.outputText4) elements.textOutput4.placeholder = translations.text4;
-      if (elements.copyButton1) elements.copyButton1.textContent = translations.copyButton + ' 1';
-      if (elements.copyButton2) elements.copyButton2.textContent = translations.copyButton + ' 2';
-      if (elements.copyButton3) elements.copyButton3.textContent = translations.copyButton + ' 3';
-      if (elements.copyButton4) elements.copyButton4.textContent = translations.copyButton + ' 4';
-      if (elements.exportSettings) elements.exportSettings.textContent = translations.settingsExport;
-      if (elements.importSettings) elements.importSettings.textContent = translations.settingsImport;
+      if (elements.replacePlaceholder) elements.replacePlaceholder.placeholder = translations[lang].replacePlaceholder;
+      if (elements.removeButton) elements.removeButton.textContent = translations[lang].removeButton;
+      if (elements.addPair) elements.addPair.textContent = translations[lang].addPair;
+      if (elements.saveSettings) elements.saveSettings.textContent = translations[lang].saveSettings;
+      if (elements.replaceTitle) elements.replaceTitle.textContent = translations[lang].replaceTitle;
+      if (elements.inputText) elements.inputText.placeholder = translations[lang].inputText;
+      if (elements.replaceButton) elements.replaceButton.textContent = translations[lang].replaceButton;
+      if (elements.outputText) elements.outputText.placeholder = translations[lang].outputText;
+      if (elements.copyButton) elements.copyButton.textContent = translations[lang].copyButton;
+      if (elements.splitTitle) elements.splitTitle.textContent = translations[lang].splitTitle;
+      if (elements.splitInputText) elements.splitInputText.placeholder = translations[lang].splitInputText;
+      if (elements.splitButton) elements.splitButton.textContent = translations[lang].splitButton;
+      if (elements.output1Text) elements.output1Text.placeholder = translations[lang].output1Text;
+      if (elements.output2Text) elements.output2Text.placeholder = translations[lang].output2Text;
+      if (elements.output3Text) elements.output3Text.placeholder = translations[lang].output3Text;
+      if (elements.output4Text) elements.output4Text.placeholder = translations[lang].output4Text;
+      if (elements.copyButton1) elements.copyButton1.textContent = translations[lang].copyButton + ' 1';
+      if (elements.copyButton2) elements.copyButton2.textContent = translations[lang].copyButton + ' 2';
+      if (elements.copyButton3) elements.copyButton3.textContent = translations[lang].copyButton + ' 3';
+      if (elements.copyButton4) elements.copyButton4.textContent = translations[lang].copyButton + ' 4';
+      if (elements.exportSettings) elements.exportSettings.textContent = translations[lang].exportSettings;
+      if (elements.importSettings) elements.importSettings.textContent = translations[lang].importSettings;
 
       const punctuationItems = document.querySelectorAll('.punctuation-item');
       punctuationItems.forEach(item => {
-        const findInput = items.querySelector('.find');
-        const replaceText = items.querySelector('.replace');
-        const removeBtn = items.querySelector('.remove');
-        if (findInput) findInput.placeholderText = translations.placeholderText;
-        if (replaceInput) replaceInput.placeholderText = translations.placeholderText;
-        if (removeBtn) removeBtn.textContent = translations.removeButton;
+        const findInput = item.querySelector('.find');
+        const replaceInput = item.querySelector('.replace');
+        const removeBtn = item.querySelector('.remove');
+        if (findInput) findInput.placeholder = translations[lang].findPlaceholder;
+        if (replaceInput) replaceInput.placeholder = translations[lang].replacePlaceholder;
+        if (removeBtn) removeBtn.textContent = translations[lang].removeButton;
       });
-    } catch (err) {
+    } catch (error) {
       console.error('Chi tiết lỗi trong updateLanguage:', error);
-      throw err;
+      throw error;
     }
   }
 
   function updateModeButtons() {
-    const renameModeButton = document.getElementById('rename-mode-btn');
-    const deleteModeBtn = document.getElementById('delete-mode-btn');
-    if (currentMode !== 'default' && renameMode && deleteModeBtn) {
-      renameModeButton.style.display = 'inline-block';
-      deleteModeBtn.style.display = 'inline-block';
-    } else if (renameModeButton && deleteModeBtn) {
-      renameModeButton.style.display = 'none';
-      deleteModeBtn.style.display = 'none';
+    const renameMode = document.getElementById('rename-mode');
+    const deleteMode = document.getElementById('delete-mode');
+    if (currentMode !== 'default' && renameMode && deleteMode) {
+      renameMode.style.display = 'inline-block';
+      deleteMode.style.display = 'inline-block';
+    } else if (renameMode && deleteMode) {
+      renameMode.style.display = 'none';
+      deleteMode.style.display = 'none';
     }
   }
 
   function updateButtonStates() {
-    const matchCaseButton = document.getElementById('match-case-btn');
+    const matchCaseButton = document.getElementById('match-case');
     if (matchCaseButton) {
       matchCaseButton.textContent = matchCaseEnabled ? translations[currentLang].matchCaseOn : translations[currentLang].matchCaseOff;
       matchCaseButton.style.background = matchCaseEnabled ? '#28a745' : '#6c757d';
@@ -211,74 +207,70 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function showNotification(message, type = 'success') {
-    const container = document.querySelector('#notification-container');
+    const container = document.getElementById('notification-container');
     if (!container) {
       console.error('Không tìm thấy container thông báo');
       return;
     }
 
-    try {
-      const notification = document.createElement('div');
-      notification.className = `notification ${type}`;
-      notification.textContent = message;
-      container.appendChild(notification);
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    container.appendChild(notification);
 
-      setTimeout(() => {
-        notification.remove();
-      }, 3000);
-    } catch (e) {
-      console.error('Lỗi khi hiển thị thông báo:', error);
-    }
+    setTimeout(() => {
+      notification.remove();
+    }, 3000);
   }
 
   function countWords(text) {
-    return text.trim().length ? text.split(' ').filter(word => word.length > 0).length : 0;
+    return text.trim() ? text.split(/\s+/).filter(word => word.length > 0).length : 0;
   }
 
   function updateWordCount(textareaId, counterId) {
-    const textarea = document.getElementById('textarea');
-    const counter = document.getElementById('counter');
+    const textarea = document.getElementById(textareaId);
+    const counter = document.getElementById(counterId);
     if (textarea && counter) {
-      counter.textContent = `Words: ${countWords(textarea.value)}`;
+      counter.textContent = `${countWords(textarea.value)} từ`;
     }
   }
 
   function loadModes() {
-    const modeSelect = document.querySelector('#mode-select');
+    const modeSelect = document.getElementById('mode-select');
     if (!modeSelect) {
       console.error('Không tìm thấy phần tử mode-select');
-      throw new Error('Missing mode-select element');
+      throw new Error('Thiếu mode-select trong DOM');
     }
 
-    let settings = {};
+    let settings;
     try {
       const storedSettings = localStorage.getItem(LOCAL_STORAGE_KEY);
       settings = storedSettings ? JSON.parse(storedSettings) : { modes: { default: { pairs: [], matchCase: false } } };
     } catch (error) {
-      console.error('Lỗi khi đọc localStorage:', error);
+      console.error('Lỗi khi parse localStorage:', error);
       settings = { modes: { default: { pairs: [], matchCase: false } } };
     }
 
-    const modes = Array.from(Object.keys(settings.modes || { default: 'default' }));
+    const modes = Object.keys(settings.modes || { default: {} });
 
     modeSelect.innerHTML = '';
     modes.forEach(mode => {
-      const items = document.createElement('option');
-      items.value = mode;
-      items.textContent = mode;
-      modeSelect.appendChild(items);
+      const option = document.createElement('option');
+      option.value = mode;
+      option.textContent = mode;
+      modeSelect.appendChild(option);
     });
     modeSelect.value = currentMode;
 
     loadSettings();
-    updateModes();
+    updateModeButtons();
   }
 
   function loadSettings() {
-    console.log('Đang tải cài đặt cho chế độ:', mode);
+    console.log('Đang tải cài đặt cho chế độ:', currentMode);
     let settings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || { modes: { default: { pairs: [], matchCase: false } } };
-    const modeSettings = settings.modes?.[currentMode] || { pairs: [], matchMode: false };
-    const list = settings.getElementById('punctuation-list');
+    const modeSettings = settings.modes?.[currentMode] || { pairs: [], matchCase: false };
+    const list = document.getElementById('punctuation-list');
     if (!list) {
       console.error('Không tìm thấy phần tử punctuation-list');
       return;
@@ -288,138 +280,138 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!modeSettings.pairs || modeSettings.pairs.length === 0) {
       addPair('', '');
     } else {
-      modeSettings.pairs.reverse().forEach(item => {
+      modeSettings.pairs.slice().reverse().forEach(pair => {
         console.log('Đang tải cặp:', pair);
-        items.addPair(item.find || '', item.replace || '');
+        addPair(pair.find || '', pair.replace || '');
       });
     }
-    matchCaseEnabled = modeSettings.matchEnabled || false;
-    settings.updateButtonStates();
+    matchCaseEnabled = modeSettings.matchCase || false;
+    updateButtonStates();
     console.log('Đã cập nhật trạng thái:', { matchCaseEnabled });
   }
 
-  function addPair(find = '', text = '') {
-    const list = document.createElement('#punctuation-list');
+  function addPair(find = '', replace = '') {
+    const list = document.getElementById('punctuation-list');
     if (!list) {
       console.error('Không tìm thấy phần tử punctuation-list');
       return;
     }
 
-    const item = list.createElement('div');
+    const item = document.createElement('div');
     item.className = 'punctuation-item';
 
-    const findItem = document.createElement('input');
-    findItem.type = 'text';
-    findItem.className = 'find';
-    findItem.placeholder = translations[currentLang].findPlaceholder;
-    findItem.value = find;
+    const findInput = document.createElement('input');
+    findInput.type = 'text';
+    findInput.className = 'find';
+    findInput.placeholder = translations[currentLang].findPlaceholder;
+    findInput.value = find;
 
-    const replaceText = document.createElement('input');
-    replaceText.type = 'text';
-    replaceText.className = 'replace';
-    replaceText.placeholder = translations[currentLang].replacePlaceholder;
-    replaceText.value = text;
+    const replaceInput = document.createElement('input');
+    replaceInput.type = 'text';
+    replaceInput.className = 'replace';
+    replaceInput.placeholder = translations[currentLang].replacePlaceholder;
+    replaceInput.value = replace;
 
-    const removeBtn = document.createElement('button');
-    removeBtn.className = 'remove';
-    removeBtn.textContent = translations[currentLang].removeButton;
+    const removeButton = document.createElement('button');
+    removeButton.className = 'remove';
+    removeButton.textContent = translations[currentLang].removeButton;
 
-    item.appendChild(findText);
-    item.appendChild(replaceText);
-    item.appendChild(removeBtn);
+    item.appendChild(findInput);
+    item.appendChild(replaceInput);
+    item.appendChild(removeButton);
 
     if (list.firstChild) {
-      list.insertBefore(item.firstChild);
+      list.insertBefore(item, list.firstChild);
     } else {
       list.appendChild(item);
     }
 
-    removeBtn.addEventListener('click', () => {
+    removeButton.addEventListener('click', () => {
       item.remove();
-      console.log('Đã xóa cặp từ');
+      console.log('Đã xóa cặp');
     });
 
-    console.log('Đã thêm cặp vào DOM:', { find: findInput.value, replace: replaceText.value });
+    console.log('Đã thêm cặp vào DOM:', { find: findInput.value, replace: replaceInput.value });
   }
 
   function updateSplitModeUI(mode) {
-    const currentSplitMode = mode;
-    const splitterContainer = document.querySelector('.split-container');
-    const output3Section = document.querySelector('#output3-section');
-    const output4Section = document.querySelector('#output4-section');
-    const splitterButtons = document.querySelectorAll('.split-mode-button');
+    currentSplitMode = mode;
+    const splitContainer = document.querySelector('.split-container');
+    const output3Section = document.getElementById('output3-section');
+    const output4Section = document.getElementById('output4-section');
+    const splitModeButtons = document.querySelectorAll('.split-mode-button');
 
-    // Cập nhật lớp cho splitter-container
-    splitterContainer.classList.remove('split-2', 'split-mode-3', 'split-mode-4');
-    splitterContainer.classList.add('split-mode-${mode}');
+    // Cập nhật lớp cho split-container
+    splitContainer.classList.remove('split-2', 'split-3', 'split-4');
+    splitContainer.classList.add(`split-${mode}`);
 
     // Cập nhật trạng thái nút
-    splitterButtons.forEach(btn => {
-      btn.classList.add('active', parseInt(btn.getAttribute('data-split-mode')) === mode));
+    splitModeButtons.forEach(btn => {
+      btn.classList.toggle('active', parseInt(btn.getAttribute('data-split-mode')) === mode);
     });
 
-    // Hiển thị/ẩn các ôi output
-    output3Section.style.display = mode >= '3' ? 'block' : 'none';
-    output4Section.style.display = mode === '4' ? 'block' : 'none';
+    // Hiển thị/ẩn các ô output
+    output3Section.style.display = mode >= 3 ? 'block' : 'none';
+    output4Section.style.display = mode === 4 ? 'block' : 'none';
 
-    // Xóa nội dung và reset bộ đếm từ về 0 cho tất cả ôi
-    ['split-input-text', 'output1-text', 'output2-text', 'output3-text', 'text-output4'].forEach(id => {
+    // Xóa nội dung và reset bộ đếm từ về 0 cho tất cả ô
+    ['split-input-text', 'output1-text', 'output2-text', 'output3-text', 'output4-text'].forEach(id => {
       const textarea = document.getElementById(id);
       if (textarea) {
-        textarea.value = '';
-        updateWordCount(id, '${id.replace('split-input-text', 'split-input-text')}-word-count');
-      });
+        textarea.value = ''; // Xóa nội dung textarea
+        updateWordCount(id, `${id.replace('split-input-text', 'split-input')}-word-count`); // Reset bộ đếm từ về 0
+      }
     });
-    console.log('Đã reset bộ đếm từ về 0 cho chế độ Chia ${mode}');
-  });
+    console.log(`Đã reset bộ đếm từ về 0 cho chế độ Chia ${mode}`);
+  }
 
   function attachButtonEvents() {
     const buttons = {
       facebookLink: document.getElementById('facebook-link'),
       truyenhdLink: document.getElementById('truyenhd-link'),
-      matchCaseButton: buttons.getElementById('match-case-btn'),
-      deleteModeButton: document.getElementById('delete-mode-btn'),
-      renameModeButton: document.getElementById('rename-mode-btn'),
-      addModeButton: document.getElementById('add-mode-btn'),
-      copyModeButton: document.getElementById('copy-mode-btn'),
+      matchCaseButton: document.getElementById('match-case'),
+      deleteModeButton: document.getElementById('delete-mode'),
+      renameModeButton: document.getElementById('rename-mode'),
+      addModeButton: document.getElementById('add-mode'),
+      copyModeButton: document.getElementById('copy-mode'),
       modeSelect: document.getElementById('mode-select'),
-      addPairButton: document.getElementById('add-pair-btn'),
-      saveSettingsButton: document.getElementById('save-settings-btn'),
-      replaceButton: document.getElementById('replace-btn'),
+      addPairButton: document.getElementById('add-pair'),
+      saveSettingsButton: document.getElementById('save-settings'),
+      replaceButton: document.getElementById('replace-button'),
       copyButton: document.getElementById('copy-button'),
       splitButton: document.getElementById('split-button'),
       copyButton1: document.getElementById('copy-button1'),
       copyButton2: document.getElementById('copy-button2'),
       copyButton3: document.getElementById('copy-button3'),
-      copyButton3: document.getElementById('copy-button4'),
-      inputText: document.getElementById('text-input-text'),
+      copyButton4: document.getElementById('copy-button4'),
+      inputText: document.getElementById('input-text'),
       outputText: document.getElementById('output-text'),
       splitInputText: document.getElementById('split-input-text'),
       output1Text: document.getElementById('output1-text'),
-      output2Text): document.getElementById('output2-text'),
-      output3Text): document.getElementById('output3-text'),
-      output4Text): document.getElementById('output4-text'),
-      exportSettingsButton: document.getElementById('export-settings-btn'),
-      importSettingsButton: document.getElementById('import-settings-btn')
+      output2Text: document.getElementById('output2-text'),
+      output3Text: document.getElementById('output3-text'),
+      output4Text: document.getElementById('output4-text'),
+      exportSettingsButton: document.getElementById('export-settings'),
+      importSettingsButton: document.getElementById('import-settings')
     };
 
     if (buttons.facebookLink) {
       buttons.facebookLink.addEventListener('click', () => {
-        console.log('Đã nhấp vào link Facebook');
+        console.log('Đã nhấp vào liên kết Facebook');
       });
     } else {
-      console.error('Không tìm thấy link Facebook');
+      console.error('Không tìm thấy liên kết Facebook');
     }
 
-    if (buttons.truyenLink) {
-      buttons.truyenLink.addEventListener('click', () => {
-        console.log('Đã nhấp vào link TruyenHD');
+    if (buttons.truyenhdLink) {
+      buttons.truyenhdLink.addEventListener('click', () => {
+        console.log('Đã nhấp vào liên kết TruyenHD');
       });
     } else {
-      console.error('Không tìm thấy link TruyenHD');
+      console.error('Không tìm thấy liên kết TruyenHD');
     }
 
-    if (buttons.matchCaseButtons) {
+    if (buttons.matchCaseButton) {
       buttons.matchCaseButton.addEventListener('click', () => {
         console.log('Đã nhấp vào nút Match Case');
         matchCaseEnabled = !matchCaseEnabled;
@@ -427,396 +419,396 @@ document.addEventListener('DOMContentLoaded', () => {
         saveSettings();
       });
     } else {
-      console.error('Không tìm kiếm thấy nút Match Case');
+      console.error('Không tìm thấy nút Match Case');
     }
 
     if (buttons.deleteModeButton) {
       buttons.deleteModeButton.addEventListener('click', () => {
-        console.log('Đã nhấp vào nút Xóa Mode');
+        console.log('Đã nhấp vào nút Xóa Chế Độ');
         if (currentMode !== 'default') {
-          if (confirm('Bạn có chắc chắn muốn xóa mode "${currentMode}"?')) {
-            let settings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || '{}';
+          if (confirm(`Bạn có chắc chắn muốn xóa chế độ "${currentMode}"?`)) {
+            let settings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || { modes: { default: { pairs: [], matchCase: false } } };
             if (settings.modes[currentMode]) {
               delete settings.modes[currentMode];
               localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings));
-              currentMode.value = 'default';
-              settings.loadModes();
-              showNotification('Đã xóa mode "${currentMode}"!', 'success');
+              currentMode = 'default';
+              loadModes();
+              showNotification(translations[currentLang].modeDeleted.replace('{mode}', currentMode), 'success');
             }
-          });
+          }
         }
       });
     } else {
-      console.error('Không tìm thấy nút Xóa Mode');
+      console.error('Không tìm thấy nút Xóa Chế Độ');
     }
 
     if (buttons.renameModeButton) {
       buttons.renameModeButton.addEventListener('click', () => {
-        console.log('Đã nhấp vào nút Rename Mode');
-        const newModeName = prompt('Enter new name for mode:');
-        if (newModeName && !newModeName.includes('mode_') && newModeName.trim() !== '' && newModeName !== currentMode) {
-          let settings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || '{}';
+        console.log('Đã nhấp vào nút Đổi Tên Chế Độ');
+        const newName = prompt(translations[currentLang].renamePrompt);
+        if (newName && !newName.includes('mode_') && newName.trim() !== '' && newName !== currentMode) {
+          let settings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || { modes: { default: { pairs: [], matchCase: false } } };
           if (settings.modes[currentMode]) {
-            settings.modes[newModeName] = settings.modes[currentMode];
+            settings.modes[newName] = settings.modes[currentMode];
             delete settings.modes[currentMode];
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings));
-            currentMode.value = newModeName;
-            settings.loadModes();
-            showNotification('Đã đổi tên mode thành "${newModeName}"!', 'success');
+            currentMode = newName;
+            loadModes();
+            showNotification(translations[currentLang].renameSuccess.replace('{mode}', newName), 'success');
           } else {
-            showNotification('Lỗi khi đổi tên mode!', 'error');
+            showNotification(translations[currentLang].renameError, 'error');
           }
-        });
+        }
       });
     } else {
-      console.error('Không tìm thấy nút Đổi tên Mode');
+      console.error('Không tìm thấy nút Đổi Tên Chế Độ');
     }
 
     if (buttons.addModeButton) {
       buttons.addModeButton.addEventListener('click', () => {
-        console.log('Đã nhấp vào nút Thêm Mode');
-        const newMode = await prompt('Enter new mode name:');
+        console.log('Đã nhấp vào nút Thêm Chế Độ');
+        const newMode = prompt(translations[currentLang].newModePrompt);
         if (newMode && !newMode.includes('mode_') && newMode.trim() !== '' && newMode !== 'default') {
-          let settings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || '{}';
+          let settings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || { modes: { default: { pairs: [], matchCase: false } } };
           if (settings.modes[newMode]) {
-            showNotification('Tên mode không hợp lệ hoặc đã tồn tại!', 'error');
+            showNotification(translations[currentLang].invalidModeName, 'error');
             return;
           }
           settings.modes[newMode] = { pairs: [], matchCase: false };
           localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings));
-          currentMode.value = newMode;
-          settings.loadModes();
-          showNotification('Đã tạo mode "${newMode}"!', 'success');
+          currentMode = newMode;
+          loadModes();
+          showNotification(translations[currentLang].modeCreated.replace('{mode}', newMode), 'success');
         } else {
-          showNotification('Tên mode không hợp lệ!', 'error');
+          showNotification(translations[currentLang].invalidModeName, 'error');
         }
       });
     } else {
-      console.error('Không tìm thấy nút Thêm Mode');
+      console.error('Không tìm thấy nút Thêm Chế Độ');
     }
 
     if (buttons.copyModeButton) {
       buttons.copyModeButton.addEventListener('click', () => {
-        console.log('Đã nhấp vào nút Copy Mode');
-        const newMode = await prompt('Enter new mode name:');
-        if (newMode && !newMode.includes('mode_') && newMode.trim() !== '' && newMode !== 'default') {
-          let settings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || '{}';
+        console.log('Đã nhấp vào nút Sao Chép Chế Độ');
+        const newMode = prompt(translations[currentLang].newModePrompt);
+        if (newMode && !newName.includes('mode_') && newMode.trim() !== '' && newMode !== 'default') {
+          let settings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || { modes: { default: { pairs: [], matchCase: false } } };
           if (settings.modes[newMode]) {
-            showNotification('Tên mode không hợp lệ hoặc đã tồn tại!', 'error');
+            showNotification(translations[currentLang].invalidModeName, 'error');
             return;
           }
-          settings.modes[newMode] = JSON.parse(JSON.stringify(settings.modes[currentMode] || '{}'));
+          settings.modes[newMode] = JSON.parse(JSON.stringify(settings.modes[currentMode] || { pairs: [], matchCase: false }));
           localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings));
-          currentMode.value = newMode;
-          settings.loadModes();
-          showNotification('Đã tạo mode "${newMode}"!', 'success');
+          currentMode = newMode;
+          loadModes();
+          showNotification(translations[currentLang].modeCreated.replace('{mode}', newMode), 'success');
         } else {
-          showNotification('Tên mode không hợp lệ!', 'error');
+          showNotification(translations[currentLang].invalidModeName, 'error');
         }
       });
     } else {
-      console.error('Không tìm thấy nút Copy Mode');
+      console.error('Không tìm thấy nút Sao Chép Chế Độ');
     }
 
     if (buttons.modeSelect) {
-      buttons.modeSelect.addEventListener('change', (e => {
-          console.log('Chế độ đã thay đổi thành:', e.target.value));
-          currentMode.textContent = e.target.textContent;
-          settings.load();
-          showNotification('Đã chuyển sang mode "${currentMode.textContent}"', 'success');
-          updateModeButtons();
-        });
-      } else {
-        console.error('Không tìm thấy bộ chọn mode');
+      buttons.modeSelect.addEventListener('change', (e) => {
+        console.log('Chế độ đã thay đổi thành:', e.target.value);
+        currentMode = e.target.value;
+        loadSettings();
+        showNotification(translations[currentLang].switchedMode.replace('{mode}', currentMode), 'success');
+        updateModeButtons();
       });
+    } else {
+      console.error('Không tìm thấy phần tử chọn chế độ');
+    }
 
-    if (buttons.addPairBtn) {
-      buttons.addPairBtn.addEventListener('click', () => {
+    if (buttons.addPairButton) {
+      buttons.addPairButton.addEventListener('click', () => {
         console.log('Đã nhấp vào nút Thêm Cặp');
-        items.addPair('');
+        addPair('', '');
       });
     } else {
       console.error('Không tìm thấy nút Thêm Cặp');
     }
 
-    if (buttons.saveSettingsBtn) {
-      buttons.saveSettingsBtn.addEventListener('click', () => {
-        console.log('Đã nhấp vào nút Save Settings');
+    if (buttons.saveSettingsButton) {
+      buttons.saveSettingsButton.addEventListener('click', () => {
+        console.log('Đã nhấp vào nút Lưu Cài Đặt');
         saveSettings();
       });
     } else {
-      console.error('Không tìm thấy nút Save Settings');
+      console.error('Không tìm thấy nút Lưu Cài Đặt');
     }
 
     // Bộ đếm từ cho tab Replace
     if (buttons.inputText) {
       buttons.inputText.addEventListener('input', () => {
-        updateWords('input-text', 'input-word-count');
+        updateWordCount('input-text', 'input-word-count');
       });
     }
     if (buttons.outputText) {
       buttons.outputText.addEventListener('input', () => {
-        updateWords('output-text', 'output-word-count');
+        updateWordCount('output-text', 'output-word-count');
       });
     }
 
-    // Bộ đếm từ cho tab Splitting
+    // Bộ đếm từ cho tab Chia Chương
     ['split-input-text', 'output1-text', 'output2-text', 'output3-text', 'output4-text'].forEach(id => {
-      const textarea = buttons.getElementById(id);
+      const textarea = document.getElementById(id);
       if (textarea) {
         textarea.addEventListener('input', () => {
-          updateWords(id, '${id.replaceText('split-input-text', 'split-input-text')}-word-count');
+          updateWordCount(id, `${id.replace('split-input-text', 'split-input')}-word-count`);
         });
       }
     });
 
-    if (buttons.replaceBtn) {
-      buttons.replaceBtn.addEventListener('click', () => {
-        console.log('Đã nhấp vào nút Replace');
-        const inputTextArea = textarea.getElementById('input-text');
+    if (buttons.replaceButton) {
+      buttons.replaceButton.addEventListener('click', () => {
+        console.log('Đã nhấp vào nút Thay thế');
+        const inputTextArea = document.getElementById('input-text');
         if (!inputTextArea || !inputTextArea.value) {
-          showNotification('Không có văn bản để thay thế!', 'error');
+          showNotification(translations[currentLang].noTextToReplace, 'error');
           return;
         }
 
-        let settings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || '{}';
-        let outputText = settings.inputTextArea.value;
-        const modeSettings = settings.modes[currentSettings] || { pairs: [], modeSettings: false };
+        let settings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || { modes: { default: { pairs: [], matchCase: false } } };
+        let outputText = inputTextArea.value;
+        const modeSettings = settings.modes?.[currentMode] || { pairs: [], matchCase: false };
         const pairs = modeSettings.pairs || [];
         if (pairs.length === 0) {
-          showNotification('Không có cặp tìm-thay thế nào được cấu hình!', 'error');
+          showNotification(translations[currentLang].noPairsConfigured, 'error');
           return;
         }
 
-        const matchCaseSetting = modeSettings.matchCase || false;
+        const matchCase = modeSettings.matchCase || false;
 
         pairs.forEach(pair => {
-          let find = pairs.find;
-          let replaceText = pairs.replace !== undefined ? pairs.replace : '';
-          if (!text) return;
+          let find = pair.find;
+          let replace = pair.replace !== undefined ? pair.replace : '';
+          if (!find) return;
 
           let findMatch, replaceMatch;
-          const quoteRegex = new RegExp(/^['"](.*?)['"]$/);
-          const parenRegex = new RegExp(/^\((.*?)\)$/);
+          const quoteRegex = /^(['"])(.*)\1$/;
+          const parenRegex = /^(\()(.*)(\))$/;
 
           findMatch = find.match(quoteRegex) || find.match(parenRegex);
-          replaceMatchMatch = replaceText.match(quoteRegex) || replaceText.match(parenRegex);
+          replaceMatch = replace.match(quoteRegex) || replace.match(parenRegex);
 
-          let findCoreText = findMatch ? matchMatch[1] : find;
-          let replaceCoreText = replaceMatch ? replaceMatch[1] : replaceText;
-          let findPrefix = findMatch ? findMatch[0][0] : '';
-          let findSuffix = findMatch ? findMatch[1] || findMatch[0] : '';
-          let replaceTextPrefix = replaceMatch ? replaceMatch[0] : findMatch ? findPrefix : '';
-          let replaceTextSuffix = replaceMatch ? replaceMatch[1] || replaceMatch[0] : findMatch ? findSuffix : '';
+          let findCore = findMatch ? findMatch[2] : find;
+          let replaceCore = replaceMatch ? replaceMatch[2] : replace;
+          let findPrefix = findMatch ? findMatch[1] : '';
+          let findSuffix = findMatch ? (findMatch[3] || findMatch[1]) : '';
+          let replacePrefix = replaceMatch ? replaceMatch[1] : (findMatch ? findPrefix : '');
+          let replaceSuffix = replaceMatch ? (replaceMatch[3] || replaceMatch[1]) : (findMatch ? findSuffix : '');
 
-          let regexPattern = escapeRegExp(findCoreText);
+          let regexPattern = escapeRegExp(findCore);
           if (findMatch) {
-            regexPattern = escapeRegExp(findPrefix) + regexPattern + escapeRegExp(findSuffix);
+            regexPattern = `${escapeRegExp(findPrefix)}${regexPattern}${escapeRegExp(findSuffix)}`;
           }
 
           const regexFlags = matchCase ? 'gu' : 'giu';
           const regex = new RegExp(regexPattern, regexFlags);
 
-          if (matchCaseSetting) {
-            outputText = outputText.replace(regex, (match, offset, text) => {
-              const isStartOfLine = offset === 0 || text[offset - 1] === '\n';
-              const isAfterPeriod = offset > 1 && text.substring(offset.substring(offset - 2, offset)).match(/\.s/);
+          if (matchCase) {
+            outputText = outputText.replace(regex, (match, offset, string) => {
+              const isStartOfLine = offset === 0 || string[offset - 1] === '\n';
+              const isAfterPeriod = offset > 1 && string.substring(offset - 2, offset).match(/\.\s/);
 
-              let finalReplaceCore = replaceTextCore;
-              if (isAfterPeriod || isStartOfLine) {
-                finalReplaceCore = replaceTextCore.charAt(0).toUpperCase() + replaceTextCore.slice(1);
+              let finalReplaceCore = replaceCore;
+              if (isStartOfLine || isAfterPeriod) {
+                finalReplaceCore = replaceCore.charAt(0).toUpperCase() + replaceCore.slice(1);
               }
 
-              return replaceTextPrefix + finalReplaceCore + replaceTextSuffix;
+              return `${replacePrefix}${finalReplaceCore}${replaceSuffix}`;
             });
           } else {
-            const replacementText = replaceTextPrefix + replaceTextCore + replaceTextSuffix;
-            outputText = outputText.replace(regex, replacementText);
+            const replacement = `${replacePrefix}${replaceCore}${replaceSuffix}`;
+            outputText = outputText.replace(regex, replacement);
           }
         });
 
-        const paragraphs = outputText.split('\n').filter(p => p.trim().length);
+        const paragraphs = outputText.split('\n').filter(p => p.trim());
         outputText = paragraphs.join('\n\n');
 
-        const outputTextArea = textarea.getElementById('output-text');
+        const outputTextArea = document.getElementById('output-text');
         if (outputTextArea) {
           outputTextArea.value = outputText;
           inputTextArea.value = '';
-          updateWords('input-text', 'input-word-count');
-          updateWords('output-text', 'output-word-count');
-          showNotification('Đã thay thế văn bản thành công!', 'success');
+          updateWordCount('input-text', 'input-word-count');
+          updateWordCount('output-text', 'output-word-count');
+          showNotification(translations[currentLang].textReplaced, 'success');
         } else {
           console.error('Không tìm thấy khu vực văn bản đầu ra');
         }
       });
     } else {
-      console.error('Không tìm thấy nút Replace');
+      console.error('Không tìm thấy nút Thay thế');
     }
 
-    if (buttons.copyBtn) {
-      buttons.copyBtn.addEventListener('click', () => {
-        console.log('Đã nhấp vào nút Copy');
-        const outputTextArea = textarea.getElementById('output-text');
+    if (buttons.copyButton) {
+      buttons.copyButton.addEventListener('click', () => {
+        console.log('Đã nhấp vào nút Sao chép');
+        const outputTextArea = document.getElementById('output-text');
         if (outputTextArea && outputTextArea.value) {
           navigator.clipboard.writeText(outputTextArea.value).then(() => {
             console.log('Đã sao chép văn bản vào clipboard');
-            showNotification('Đã sao chép văn bản vào clipboard!', 'success');
+            showNotification(translations[currentLang].textCopied, 'success');
           }).catch(err => {
-            console.error('Không thể sao chép văn bản:', err);
-            showNotification('Không thể sao chép văn bản, vui lòng thử lại!', 'error');
+            console.error('Không thể sao chép văn bản: ', err);
+            showNotification(translations[currentLang].failedToCopy, 'error');
           });
         } else {
-          showNotification('Không có văn bản để sao chép!', 'error');
+          showNotification(translations[currentLang].noTextToCopy, 'error');
         }
       });
     } else {
-      console.error('Không tìm thấy nút Copy');
+      console.error('Không tìm thấy nút Sao chép');
     }
 
-    if (buttons.splitBtn) {
-      buttons.splitBtn.addEventListener('click', () => {
-        console.log('Đã nhấp vào nút Split');
-        const inputTextArea = textarea.getElementById('split-input-text');
+    if (buttons.splitButton) {
+      buttons.splitButton.addEventListener('click', () => {
+        console.log('Đã nhấp vào nút Chia Chương');
+        const inputTextArea = document.getElementById('split-input-text');
         const outputTextAreas = [
-          textarea.getElementById('output1-text'),
-          textarea.getElementById('output2-text'),
-          textarea.getElementById('output3-text'),
-          textarea.getElementById('output4-text')
+          document.getElementById('output1-text'),
+          document.getElementById('output2-text'),
+          document.getElementById('output3-text'),
+          document.getElementById('output4-text')
         ].slice(0, currentSplitMode);
         if (!inputTextArea || !inputTextArea.value) {
-          showNotification('Không có văn bản để chia!', 'error');
+          showNotification(translations[currentLang].noTextToSplit, 'error');
           return;
         }
 
-        let text = inputTextArea.textContent;
-        const chapterRegex = new RegExp(/^Chương\s+(\d+)(?::\s*(.*))?$/m);
+        let text = inputTextArea.value;
+        const chapterRegex = /^Chương\s+(\d+)(?::\s*(.*))?$/m;
         let chapterNum = 1;
-        let chapterText = '';
+        let chapterTitle = '';
 
-        const chapterMatch = chapterRegex.exec(text);
-        if (chapterMatch) {
-          chapterNum = parseInt(chapterMatch[1]);
-          chapterText = chapterMatch[2] ? ': ' + chapterMatch[2] : '';
+        const match = text.match(chapterRegex);
+        if (match) {
+          chapterNum = parseInt(match[1]);
+          chapterTitle = match[2] ? `: ${match[2]}` : '';
           text = text.replace(chapterRegex, '').trim();
         }
 
-        const paragraphs = text.split('\n').filter(p => p.trim().length);
+        const paragraphs = text.split('\n').filter(p => p.trim());
         const totalWords = countWords(text);
         const wordsPerPart = Math.floor(totalWords / currentSplitMode);
 
         let parts = [];
         let wordCount = 0;
-        let startIdx = 0;
+        let startIndex = 0;
 
         for (let i = 0; i < paragraphs.length; i++) {
           const wordsInParagraph = countWords(paragraphs[i]);
           wordCount += wordsInParagraph;
           if (parts.length < currentSplitMode - 1 && wordCount >= wordsPerPart * (parts.length + 1)) {
-            parts.push(...paragraphs.slice(startIdx, i + 1).join('\n'));
-            startIdx = i + 1;
+            parts.push(paragraphs.slice(startIndex, i + 1).join('\n\n'));
+            startIndex = i + 1;
           }
         }
-        parts.push(...paragraphs.slice(startIdx).join('\n'));
+        parts.push(paragraphs.slice(startIndex).join('\n\n'));
 
-        outputTextAreas.forEach((textArea, idx) => {
-          if (textArea) {
-            textArea.value = `Chapter ${chapterNum}.${idx + 1}${chapterText}\n\n${parts[idx] || ''}`;
-            updateWords(`output${idx + 1}-text`, `output${idx-word-count}`);
-          });
+        outputTextAreas.forEach((textarea, index) => {
+          if (textarea) {
+            textarea.value = `Chương ${chapterNum}.${index + 1}${chapterTitle}\n\n${parts[index] || ''}`;
+            updateWordCount(`output${index + 1}-text`, `output${index + 1}-word-count`);
+          }
         });
 
         inputTextArea.value = '';
-        updateWords('split-input-text', 'split-input-word-count');
-        showNotification('Đã chia thành công!', 'success');
+        updateWordCount('split-input-text', 'split-input-word-count');
+        showNotification(translations[currentLang].splitSuccess, 'success');
       });
     } else {
-      console.error('Không tìm thấy nút Split');
+      console.error('Không tìm thấy nút Chia Chương');
     }
 
-    if (buttons.copyBtn1) {
-      buttons.copyBtn1.addEventListener('click', () => {
-        console.log('Đã nhấp vào nút Copy 1');
-        const outputText1 = textarea.getElementById('output1-text');
-        if (outputText1 && outputText1.value) {
-          navigator.clipboard.write(outputText1.value).then(() => {
+    if (buttons.copyButton1) {
+      buttons.copyButton1.addEventListener('click', () => {
+        console.log('Đã nhấp vào nút Sao chép 1');
+        const output1TextArea = document.getElementById('output1-text');
+        if (output1TextArea && output1TextArea.value) {
+          navigator.clipboard.writeText(output1TextArea.value).then(() => {
             console.log('Đã sao chép văn bản từ output1');
-            showNotification('Đã sao chép văn bản vào clipboard!', 'success');
+            showNotification(translations[currentLang].textCopied, 'success');
           }).catch(err => {
-            console.error('Không thể chép văn bản từ output1:', err);
-            showNotification('Không thể chép văn bản, vui lòng thử lại!', 'error');
+            console.error('Không thể sao chép văn bản từ output1: ', err);
+            showNotification(translations[currentLang].failedToCopy, 'error');
           });
         } else {
-          showNotification('Không có văn bản để sao chép!', 'error');
+          showNotification(translations[currentLang].noTextToCopy, 'error');
         }
       });
     } else {
-      console.error('Không tìm thấy nút Copy 1');
+      console.error('Không tìm thấy nút Sao chép 1');
     }
 
-    if (buttons.copyBtn2) {
-      buttons.copyBtn2.addEventListener('click', () => {
-        console.log('Đã nhấp vào nút Copy 2');
-        const outputText2 = textarea.getElementById('output2-text');
-        if (outputText2 && outputText2.value) {
-          navigator.clipboard.write(outputText2.value).then(() => {
+    if (buttons.copyButton2) {
+      buttons.copyButton2.addEventListener('click', () => {
+        console.log('Đã nhấp vào nút Sao chép 2');
+        const output2TextArea = document.getElementById('output2-text');
+        if (output2TextArea && output2TextArea.value) {
+          navigator.clipboard.writeText(output2TextArea.value).then(() => {
             console.log('Đã sao chép văn bản từ output2');
-            showNotification('Đã sao chép văn bản vào clipboard!', 'success');
+            showNotification(translations[currentLang].textCopied, 'success');
           }).catch(err => {
-            console.error('Không thể chép văn bản từ output2:', err);
-            showNotification('Không thể chép văn bản, vui lòng thử lại!', 'error');
+            console.error('Không thể sao chép văn bản từ output2: ', err);
+            showNotification(translations[currentLang].failedToCopy, 'error');
           });
         } else {
-          showNotification('Không có văn bản để sao chép!', 'error');
+          showNotification(translations[currentLang].noTextToCopy, 'error');
         }
       });
     } else {
-      console.error('Không tìm thấy nút Copy 2');
+      console.error('Không tìm thấy nút Sao chép 2');
     }
 
-    if (buttons.copyBtn3) {
-      buttons.copyBtn3.addEventListener('click', () => {
-        console.log('Đã nhấp vào nút Copy 3');
-        const outputText3 = textarea.getElementById('output3-text');
-        if (outputText3 && outputText3.value) {
-          navigator.clipboard.write(outputText3.value).then(() => {
+    if (buttons.copyButton3) {
+      buttons.copyButton3.addEventListener('click', () => {
+        console.log('Đã nhấp vào nút Sao chép 3');
+        const output3TextArea = document.getElementById('output3-text');
+        if (output3TextArea && output3TextArea.value) {
+          navigator.clipboard.writeText(output3TextArea.value).then(() => {
             console.log('Đã sao chép văn bản từ output3');
-            showNotification('Đã sao chép văn bản vào clipboard!', 'success');
+            showNotification(translations[currentLang].textCopied, 'success');
           }).catch(err => {
-            console.error('Không thể chép văn bản từ output3:', err);
-            showNotification('Không thể chép văn bản, vui lòng thử lại!', 'error');
+            console.error('Không thể sao chép văn bản từ output3: ', err);
+            showNotification(translations[currentLang].failedToCopy, 'error');
           });
         } else {
-          showNotification('Không có văn bản để sao chép!', 'error');
+          showNotification(translations[currentLang].noTextToCopy, 'error');
         }
       });
     } else {
-      console.error('Không tìm thấy nút Copy 3');
+      console.error('Không tìm thấy nút Sao chép 3');
     }
 
-    if (buttons.copyBtn4) {
-      buttons.copyBtn4.addEventListener('click', () => {
-        console.log('Đã nhấp vào nút Copy 4');
-        const outputText4 = textarea.getElementById('output4-text');
-        if (outputText4 && outputText4.value) {
-          navigator.clipboard.write(outputText4.value).then(() => {
+    if (buttons.copyButton4) {
+      buttons.copyButton4.addEventListener('click', () => {
+        console.log('Đã nhấp vào nút Sao chép 4');
+        const output4TextArea = document.getElementById('output4-text');
+        if (output4TextArea && output4TextArea.value) {
+          navigator.clipboard.writeText(output4TextArea.value).then(() => {
             console.log('Đã sao chép văn bản từ output4');
-            showNotification('Đã sao chép văn bản vào clipboard!', 'success');
+            showNotification(translations[currentLang].textCopied, 'success');
           }).catch(err => {
-            console.error('Không thể chép văn bản từ output4:', err);
-            showNotification('Không thể chép văn bản, vui lòng thử lại!', 'error');
+            console.error('Không thể sao chép văn bản từ output4: ', err);
+            showNotification(translations[currentLang].failedToCopy, 'error');
           });
         } else {
-          showNotification('Không có văn bản để sao chép!', 'error');
+          showNotification(translations[currentLang].noTextToCopy, 'error');
         }
       });
     } else {
-      console.error('Không tìm thấy nút Copy 4');
+      console.error('Không tìm thấy nút Sao chép 4');
     }
 
-    if (buttons.exportSettingsBtn) {
-      buttons.exportSettingsBtn.addEventListener('click', () => {
-        console.log('Đã nhấp vào nút Export Settings');
-        let settings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || '{}';
+    if (buttons.exportSettingsButton) {
+      buttons.exportSettingsButton.addEventListener('click', () => {
+        console.log('Đã nhấp vào nút Xuất Cài Đặt');
+        let settings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || { modes: { default: { pairs: [], matchCase: false } } };
         const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -824,47 +816,47 @@ document.addEventListener('DOMContentLoaded', () => {
         a.download = 'extension_settings.json';
         a.click();
         URL.revokeObjectURL(url);
-        showNotification('Đã xuất cài đặt thành công!', 'success');
+        showNotification(translations[currentLang].settingsExported, 'success');
       });
     } else {
-      console.error('Không tìm thấy nút Export Settings');
+      console.error('Không tìm thấy nút Xuất Cài Đặt');
     }
 
-    if (buttons.importSettingsBtn) {
-      buttons.importSettingsBtn.addEventListener('click', () => {
-        console.log('Đã nhấp vào nút Import Settings');
+    if (buttons.importSettingsButton) {
+      buttons.importSettingsButton.addEventListener('click', () => {
+        console.log('Đã nhấp vào nút Nhập Cài Đặt');
         const input = document.createElement('input');
         input.type = 'file';
-        input.acceptType = '.json';
-        input.addEventListener('change', (event => {
+        input.accept = '.json';
+        input.addEventListener('change', (event) => {
           const file = event.target.files[0];
           if (file) {
             const reader = new FileReader();
-            reader.onload = (e => {
+            reader.onload = (e) => {
               try {
                 const settings = JSON.parse(e.target.result);
                 localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings));
-                settings.loadModes();
-                showNotification('Đã nhập cài đặt thành công!', 'success');
+                loadModes();
+                showNotification(translations[currentLang].settingsImported, 'success');
               } catch (err) {
                 console.error('Lỗi khi phân tích JSON:', err);
-                showNotification('Lỗi khi nhập cài đặt, vui lòng kiểm tra file JSON!', 'error');
+                showNotification(translations[currentLang].importError, 'error');
               }
-            });
+            };
             reader.readAsText(file);
           }
         });
         input.click();
       });
     } else {
-      console.error('Không tìm thấy nút Import Settings');
+      console.error('Không tìm thấy nút Nhập Cài Đặt');
     }
 
-    const splitModeButtons = document.querySelectorAll('.split-mode-btn');
+    const splitModeButtons = document.querySelectorAll('.split-mode-button');
     splitModeButtons.forEach(button => {
-      buttons.addEventListener('click', () => {
-        console.log('Đã nhấp vào mode Split ${button.getAttribute('data-split-mode')}');
-        updateSplitMode(parseInt(button.getAttribute('data-split-mode')));
+      button.addEventListener('click', () => {
+        console.log(`Đã nhấp vào chế độ Chia ${button.getAttribute('data-split-mode')}`);
+        updateSplitModeUI(parseInt(button.getAttribute('data-split-mode')));
       });
     });
   }
@@ -873,16 +865,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const pairs = [];
     const items = document.querySelectorAll('.punctuation-item');
     if (items.length === 0) {
-      showNotification('Không có cặp nào để lưu!');
+      showNotification(translations[currentLang].noPairsToSave, 'error');
       return;
     }
     items.forEach(item => {
-      const find = items.querySelector('.find').value || '';
-      const replaceText = items.querySelector('.replace').value || '';
-      if (find) {
-        pairs.push({ find, replaceText });
-      }
-      console.log('Đang lưu cặp:', { find, replaceText });
+      const find = item.querySelector('.find')?.value || '';
+      const replace = item.querySelector('.replace')?.value || '';
+      if (find) pairs.push({ find, replace });
+      console.log('Đang lưu cặp:', { find, replace });
     });
 
     let settings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || { modes: {} };
@@ -891,45 +881,45 @@ document.addEventListener('DOMContentLoaded', () => {
       matchCase: matchCaseEnabled
     };
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings));
-    console.log('Đã lưu cài đặt cho mode:', currentMode, settings);
-    settings.load();
-    showNotification('Đã lưu cài đặt cho mode "${currentMode}"!', 'success');
+    console.log('Đã lưu cài đặt cho chế độ:', currentMode, settings);
+    loadSettings();
+    showNotification(translations[currentLang].settingsSaved.replace('{mode}', currentMode), 'success');
   }
 
   function attachTabEvents() {
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    console.log('Tìm thấy ${tabButtons.length} nút tab');
+    const tabButtons = document.querySelectorAll('.tab-button');
+    console.log(`Tìm thấy ${tabButtons.length} nút tab`);
     if (tabButtons.length === 0) {
       console.error('Không tìm thấy nút tab');
       return;
     }
 
-    tabButtons.forEach((button, idx) => {
-      console.log('Gắn sự kiện click cho nút tab ${idx}: ${button.id}');
-      buttons.addEventListener('click', () => {
-        const tabName = buttons.getAttribute('data-tab');
-        console.log('Đang cố gắng mở tab: ${tabName}');
+    tabButtons.forEach((button, index) => {
+      console.log(`Gắn sự kiện click cho nút tab ${index}: ${button.id}`);
+      button.addEventListener('click', () => {
+        const tabName = button.getAttribute('data-tab');
+        console.log(`Đang cố gắng mở tab: ${tabName}`);
 
         const tabContents = document.querySelectorAll('.tab-content');
-        const allButtons = document.querySelectorAll('.tab-btn');
+        const allButtons = document.querySelectorAll('.tab-button');
         tabContents.forEach(tab => tab.classList.remove('active'));
         allButtons.forEach(btn => btn.classList.remove('active'));
 
-        const selectedTab = document.querySelector('#${tabName}');
+        const selectedTab = document.getElementById(tabName);
         if (selectedTab) {
           selectedTab.classList.add('active');
-          console.log('Tab ${tabName} đã được kích hoạt');
+          console.log(`Tab ${tabName} đã được kích hoạt`);
         } else {
-          console.error('Không tìm thấy tab với ID ${tabName}');
+          console.error(`Không tìm thấy tab với ID ${tabName}`);
         }
 
-        buttons.classList.add('active');
+        button.classList.add('active');
       });
     });
   }
 
-  function escapeRegExp(str) {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
   try {
@@ -942,8 +932,8 @@ document.addEventListener('DOMContentLoaded', () => {
   try {
     loadModes();
   } catch (error) {
-    console.error('Lỗi khi tải mode:', error);
-    showNotification('Có lỗi khi tải mode, nhưng bạn vẫn có thể sử dụng các chức năng khác!', 'error');
+    console.error('Lỗi khi tải chế độ:', error);
+    showNotification('Có lỗi khi tải chế độ, nhưng bạn vẫn có thể sử dụng các chức năng khác!', 'error');
   }
 
   try {
@@ -960,10 +950,10 @@ document.addEventListener('DOMContentLoaded', () => {
     showNotification('Có lỗi khi gắn sự kiện cho tab, vui lòng tải lại!', 'error');
   }
 
-  // Khởi tạo mode Split 2
+  // Khởi tạo chế độ Chia 2
   try {
-    updateSplitMode(2);
+    updateSplitModeUI(2);
   } catch (error) {
-    console.error('Lỗi khi khởi tạo mode split:', error);
+    console.error('Lỗi khi khởi tạo chế độ chia:', error);
   }
 });
