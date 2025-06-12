@@ -69,10 +69,10 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       if (typeof str !== 'string') return '';
       const htmlEntities = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
+        '&': '&',
+        '<': '<',
+        '>': '>',
+        '"': '"',
         "'": '&apos;'
       };
       return str.replace(/[&<>"']/g, match => htmlEntities[match] || match);
@@ -351,11 +351,13 @@ document.addEventListener('DOMContentLoaded', () => {
     output3Section.style.display = mode >= 3 ? 'block' : 'none';
     output4Section.style.display = mode === 4 ? 'block' : 'none';
 
-    // Xóa nội dung và đặt lại bộ đếm từ
+    // Xóa nội dung và reset bộ đếm từ về 0
     ['split-input-text', 'output1-text', 'output2-text', 'output3-text', 'output4-text'].forEach(id => {
       const textarea = document.getElementById(id);
-      if (textarea) textarea.value = '';
-      updateWordCount(id, `${id.replace('split-input-text', 'split-input')}-word-count`);
+      if (textarea) {
+        textarea.value = ''; // Xóa nội dung textarea
+        updateWordCount(id, `${id.replace('split-input-text', 'split-input')}-word-count`); // Reset bộ đếm từ về 0
+      }
     });
   }
 
