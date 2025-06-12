@@ -69,11 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       if (typeof str !== 'string') return '';
       const htmlEntities = {
-        '&': '&',
-        '<': '<',
-        '>': '>',
-        '"': '"',
-        "'": '''
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&apos;'
       };
       return str.replace(/[&<>"']/g, match => htmlEntities[match] || match);
     } catch (error) {
