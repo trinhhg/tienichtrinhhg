@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
         '<': '&lt;',
         '>': '&gt;',
         '"': '&quot;',
-        "'": '&apos;' // Sửa lỗi: thay ''' bằng &apos;
+        "'": '\'' // Sửa lỗi: sử dụng ký tự nháy đơn thoát
       };
       return str.replace(/[&<>"']/g, match => htmlEntities[match] || match);
     } catch (error) {
@@ -167,10 +167,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (elements.output2Text) elements.output2Text.placeholder = translations[lang].output2Text;
     if (elements.output3Text) elements.output3Text.placeholder = translations[lang].output3Text;
     if (elements.output4Text) elements.output4Text.placeholder = translations[lang].output4Text;
-    if (elements.copyButton1) elements.copyButton1.textContent = translations[lang].copyButton + ' 1';
-    if (elements.copyButton2) elements.copyButton2.textContent = translations[lang].copyButton + ' 2';
-    if (elements.copyButton3) elements.copyButton3.textContent = translations[lang].copyButton + ' 3';
-    if (elements.copyButton4) elements.copyButton4.textContent = translations[lang].copyButton + ' 4';
+    if (elements.copyButton1) elements.copyButton1Text[lang].copyButton + ' 1';
+    if (elements.copyButton2) elements.copyButton2Text[lang].copyButton + ' 2';
+    if (elements.copyButton3) elements.copyButton3Text[lang].copyButton + ' 3';
+    if (elements.copyButton4) elements.copyButton4Text;
+lang].copyButton + ' 4';
     if (elements.exportSettings) elements.exportSettings.textContent = translations[lang].exportSettings;
     if (elements.importSettings) elements.importSettings.textContent = translations[lang].importSettings;
 
@@ -195,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateModeButtons() {
     const renameMode = document.getElementById('rename-mode');
     const deleteMode = document.getElementById('delete-mode');
-    if (currentMode !== 'default' && renameMode && deleteMode) {
+    if (currentMode !== 'default' && renameMode && deleteMode {
       renameMode.style.display = 'inline-block';
       deleteMode.style.display = 'inline-block';
     } else if (renameMode && deleteMode) {
@@ -207,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateButtonStates() {
     const matchCaseButton = document.getElementById('match-case');
     if (matchCaseButton) {
-      matchCaseButton.textContent = matchCaseEnabled ? translations[currentLang].matchCaseOn : translations[lang].matchCaseOff;
+      matchCaseButton.textContent = matchCaseEnabled ? translations[currentLang].matchCaseOn : translations[currentLang].matchCaseOff;
       matchCaseButton.style.background = matchCaseEnabled ? '#28a745' : '#6c757d';
     } else {
       console.error('Không tìm thấy nút Match Case');
@@ -488,7 +489,7 @@ document.addEventListener('DOMContentLoaded', () => {
       buttons.copyModeButton.addEventListener('click', () => {
         console.log('Đã nhấp vào nút Sao Chép Chế Độ');
         const newMode = prompt(translations[currentLang].newModePrompt);
-        if (newMode && !newMode.includes('mode_') && newMode.trim() !== '' && newMode !== 'default') {
+        if (newMode && !newMode.includes('mode_') && newName.trim() !== '' && newMode !== 'default') {
           let settings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || { modes: { default: { pairs: [], matchCase: false } } };
           if (settings.modes[newMode]) {
             showNotification(translations[currentLang].invalidModeName, 'error');
@@ -923,7 +924,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateLanguage('vn');
   } catch (error) {
     console.error('Lỗi trong updateLanguage:', error);
-    showNotification('Có lỗi xảy ra khi cập nhật ngôn ngữ, nhưng ứng dụng vẫn hoạt động!', 'error');
+    showNotification('Có lỗi khi cập nhật ngôn ngữ, nhưng ứng dụng vẫn hoạt động!', 'error');
   }
 
   try {
@@ -935,18 +936,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   try {
     attachButtonEvents();
-    } catch (error) {
-      console.error('Lỗi trong attachButtonEvents:', error);
-      showNotification('Có lỗi khi gắn sự kiện cho nút, vui lòng tải lại!', 'error');
-    }
+  } catch (error) {
+    console.error('Lỗi trong attachButtonEvents:', error);
+    showNotification('Có lỗi khi gắn sự kiện cho nút, vui lòng tải lại!', 'error');
+  }
 
-    try {
-      attachTabEvents();
-      } catch (error) {
-        console.error('Lỗi trong attachTabEvents:', error);
-        showNotification('Có lỗi khi gắn sự kiện cho tab, vui lòng tải lại!', 'error');
-      }
+  try {
+    attachTabEvents();
+  } catch (error) {
+    console.error('Lỗi trong attachTabEvents:', error);
+    showNotification('Có lỗi khi gắn sự kiện cho tab, vui lòng tải lại!', 'error');
+  }
 
-    // Khởi tạo chế độ Chia 2
-    updateSplitModeUI(2);
+  // Khởi tạo chế độ Chia 2
+  updateSplitModeUI(2);
 });
