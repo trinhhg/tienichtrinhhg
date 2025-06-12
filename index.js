@@ -69,11 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       if (typeof str !== 'string') return '';
       const htmlEntities = {
-        '&': '&',
-        '<': '<',
-        '>': '>',
-        '"': '"',
-        "'": '''
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
       };
       return str.replace(/[&<>"']/g, match => htmlEntities[match] || match);
     } catch (error) {
@@ -351,7 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
     output3Section.style.display = mode >= 3 ? 'block' : 'none';
     output4Section.style.display = mode === 4 ? 'block' : 'none';
 
-    // Xóa nội dung và reset bộ đếm từ về 0
+    // Xóa nội dung và reset bộ đếm từ về 0 cho tất cả ô
     ['split-input-text', 'output1-text', 'output2-text', 'output3-text', 'output4-text'].forEach(id => {
       const textarea = document.getElementById(id);
       if (textarea) {
@@ -359,6 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateWordCount(id, `${id.replace('split-input-text', 'split-input')}-word-count`); // Reset bộ đếm từ về 0
       }
     });
+    console.log(`Đã reset bộ đếm từ về 0 cho chế độ Chia ${mode}`);
   }
 
   function attachButtonEvents() {
@@ -709,7 +710,7 @@ document.addEventListener('DOMContentLoaded', () => {
         outputTextAreas.forEach((textarea, index) => {
           if (textarea) {
             textarea.value = `Chương ${chapterNum}.${index + 1}${chapterTitle}\n\n${parts[index] || ''}`;
-            updateWordCount(`output${index + 1}-text`, `output${index + 1}-word-count`);
+            updateWordCount(`output${index + 1}-textContent}`);
           }
         });
 
@@ -808,7 +809,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url;
+        a.href = 'url';
         a.download = 'extension_settings.json';
         a.click();
         URL.revokeObjectURL(url);
@@ -838,7 +839,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Lỗi khi phân tích JSON:', err);
                 showNotification(translations[currentLang].importError, 'error');
               }
-            };
+            });
             reader.readAsText(file);
           }
         });
@@ -869,9 +870,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const replace = item.querySelector('.replace')?.value || '';
       if (find) pairs.push({ find, replace });
       console.log('Đang lưu cặp:', { find, replace });
-    });
+      });
 
-    let settings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || { modes: { default: { pairs: [], matchCase: false } } };
+    let settings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || { modes: { default: { pairs: [], matchCase: false } };
     settings.modes[currentMode] = {
       pairs: pairs,
       matchCase: matchCaseEnabled
