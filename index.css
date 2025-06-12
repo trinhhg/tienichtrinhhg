@@ -10,7 +10,7 @@ body {
 }
 
 .container {
-  max-width: 1200px; /* Tăng max-width để chứa 5 cột */
+  max-width: 800px;
   margin: 0 auto;
   background: white;
   padding: 20px;
@@ -175,7 +175,6 @@ h2 {
 #replace-button, #copy-button, #split-button, #copy-button1, #copy-button2, #copy-button3, #copy-button4 {
   width: 100%;
   padding: 10px 0;
-  margin: 10px 0;
   background: #007bff;
   color: white;
   border: none;
@@ -194,11 +193,11 @@ h2 {
 textarea {
   width: 100%;
   height: 150px;
-  margin-bottom: 15px;
   padding: 10px;
   font-size: 14px;
   resize: vertical;
   box-sizing: border-box;
+  margin-bottom: 0; /* Xóa margin-bottom để đếm từ sát textarea */
 }
 
 #output-text, #output1-text, #output2-text, #output3-text, #output4-text {
@@ -210,6 +209,11 @@ textarea {
   gap: 20px;
 }
 
+.input-section, .output-section {
+  flex: 1;
+  min-width: 0;
+}
+
 .split-container {
   display: flex;
   gap: 10px;
@@ -217,26 +221,40 @@ textarea {
   align-items: stretch;
 }
 
-.input-section, .output-section {
+/* Điều chỉnh kích thước cho tab Chia Chương */
+.split-container.split-2 .input-section,
+.split-container.split-2 .output-section {
   flex: 1;
-  min-width: 0;
-  max-width: 20%; /* Đảm bảo 5 cột vừa hàng ngang */
+  max-width: 33.33%; /* 3 ô vừa khít một hàng */
+}
+
+.split-container.split-3 .input-section,
+.split-container.split-3 .output-section {
+  flex: 1;
+  max-width: 25%; /* 4 ô vừa khít một hàng */
+}
+
+.split-container.split-4 .input-section,
+.split-container.split-4 .output-section {
+  flex: 1;
+  max-width: 20%; /* 5 ô vừa khít một hàng */
 }
 
 #split-input-text, #output1-text, #output2-text, #output3-text, #output4-text {
   width: 100%;
   height: 100px;
-  margin-bottom: 10px;
   padding: 8px;
   font-size: 12px;
   resize: vertical;
   box-sizing: border-box;
+  margin-bottom: 0; /* Xóa margin-bottom để đếm từ sát textarea */
 }
 
-#replace-word-count, #split-word-count {
+.word-count {
   font-size: 12px;
   color: #333;
-  margin-bottom: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px; /* Khoảng cách nhỏ giữa đếm từ và nút */
   text-align: left;
 }
 
@@ -334,7 +352,8 @@ textarea {
   .split-container {
     flex-wrap: wrap;
   }
-  .input-section, .output-section {
+  .split-container .input-section,
+  .split-container .output-section {
     max-width: 100%;
     min-width: 100%;
   }
