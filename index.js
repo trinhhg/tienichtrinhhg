@@ -69,11 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       if (typeof str !== 'string') return '';
       const htmlEntities = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;'
+        '&': '&',
+        '<': '<',
+        '>': '>',
+        '"': '"',
+        "'": '''
       };
       return str.replace(/[&<>"']/g, match => htmlEntities[match] || match);
     } catch (error) {
@@ -235,6 +235,14 @@ document.addEventListener('DOMContentLoaded', () => {
     return text.trim() ? text.split(/\s+/).filter(word => word.length > 0).length : 0;
   }
 
+  function updateWordCount(textareaId, counterId) {
+    const textarea = document.getElementById(textareaId);
+    const counter = document.getElementById(counterId);
+    if (textarea && counter) {
+      counter.textContent = `${countWords(textarea.value)} từ`;
+    }
+  }
+
   function loadModes() {
     const modeSelect = document.getElementById('mode-select');
     if (!modeSelect) {
@@ -325,25 +333,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateSplitModeUI(mode) {
     currentSplitMode = mode;
+    const splitContainer = document.querySelector('.split-container');
     const output3Section = document.getElementById('output3-section');
     const output4Section = document.getElementById('output4-section');
     const splitModeButtons = document.querySelectorAll('.split-mode-button');
-    const inputTextArea = document.getElementById('split-input-text');
-    const wordCountDiv = document.getElementById('split-word-count');
 
+    // Cập nhật lớp cho split-container
+    splitContainer.classList.remove('split-2', 'split-3', 'split-4');
+    splitContainer.classList.add(`split-${mode}`);
+
+    // Cập nhật trạng thái nút
     splitModeButtons.forEach(btn => {
       btn.classList.toggle('active', parseInt(btn.getAttribute('data-split-mode')) === mode);
     });
 
+    // Hiển thị/ẩn các ô output
     output3Section.style.display = mode >= 3 ? 'block' : 'none';
     output4Section.style.display = mode === 4 ? 'block' : 'none';
 
+    // Xóa nội dung và đặt lại bộ đếm từ
     ['split-input-text', 'output1-text', 'output2-text', 'output3-text', 'output4-text'].forEach(id => {
       const textarea = document.getElementById(id);
       if (textarea) textarea.value = '';
+      updateWordCount(id, `${id.replace('split-input-text', 'split-input')}-word-count`);
     });
-
-    if (wordCountDiv) wordCountDiv.textContent = '0 từ';
   }
 
   function attachButtonEvents() {
@@ -366,7 +379,12 @@ document.addEventListener('DOMContentLoaded', () => {
       copyButton3: document.getElementById('copy-button3'),
       copyButton4: document.getElementById('copy-button4'),
       inputText: document.getElementById('input-text'),
+      outputText: document.getElementById('output-text'),
       splitInputText: document.getElementById('split-input-text'),
+      output1Text: document.getElementById('output1-text'),
+      output2Text: document.getElementById('output2-text'),
+      output3Text: document.getElementById('output3-text'),
+      output4Text: document.getElementById('output4-text'),
       exportSettingsButton: document.getElementById('export-settings'),
       importSettingsButton: document.getElementById('import-settings')
     };
@@ -516,29 +534,32 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Không tìm thấy nút Lưu Cài Đặt');
     }
 
+    // Bộ đếm từ cho tab Replace
     if (buttons.inputText) {
       buttons.inputText.addEventListener('input', () => {
-        const wordCountDiv = document.getElementById('replace-word-count');
-        if (wordCountDiv) {
-          wordCountDiv.textContent = `${countWords(buttons.inputText.value)} từ`;
-        }
+        updateWordCount('input-text', 'input-word-count');
+      });
+    }
+    if (buttons.outputText) {
+      buttons.outputText.addEventListener('input', () => {
+        updateWordCount('output-text', 'output-word-count');
       });
     }
 
-    if (buttons.splitInputText) {
-      buttons.splitInputText.addEventListener('input', () => {
-        const wordCountDiv = document.getElementById('split-word-count');
-        if (wordCountDiv) {
-          wordCountDiv.textContent = `${countWords(buttons.splitInputText.value)} từ`;
-        }
-      });
-    }
+    // Bộ đếm từ cho tab Chia Chương
+    ['split-input-text', 'output1-text', 'output2-text', 'output3-text', 'output4-text'].forEach(id => {
+      const textarea = document.getElementById(id);
+      if (textarea) {
+        textarea.addEventListener('input', () => {
+          updateWordCount(id, `${id.replace('split-input-text', 'split-input')}-word-count`);
+        });
+      }
+    });
 
     if (buttons.replaceButton) {
       buttons.replaceButton.addEventListener('click', () => {
         console.log('Đã nhấp vào nút Thay thế');
         const inputTextArea = document.getElementById('input-text');
-        const wordCountDiv = document.getElementById('replace-word-count');
         if (!inputTextArea || !inputTextArea.value) {
           showNotification(translations[currentLang].noTextToReplace, 'error');
           return;
@@ -607,7 +628,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (outputTextArea) {
           outputTextArea.value = outputText;
           inputTextArea.value = '';
-          if (wordCountDiv) wordCountDiv.textContent = '0 từ';
+          updateWordCount('input-text', 'input-word-count');
+          updateWordCount('output-text', 'output-word-count');
           showNotification(translations[currentLang].textReplaced, 'success');
         } else {
           console.error('Không tìm thấy khu vực văn bản đầu ra');
@@ -647,7 +669,6 @@ document.addEventListener('DOMContentLoaded', () => {
           document.getElementById('output3-text'),
           document.getElementById('output4-text')
         ].slice(0, currentSplitMode);
-        const wordCountDiv = document.getElementById('split-word-count');
         if (!inputTextArea || !inputTextArea.value) {
           showNotification(translations[currentLang].noTextToSplit, 'error');
           return;
@@ -686,11 +707,12 @@ document.addEventListener('DOMContentLoaded', () => {
         outputTextAreas.forEach((textarea, index) => {
           if (textarea) {
             textarea.value = `Chương ${chapterNum}.${index + 1}${chapterTitle}\n\n${parts[index] || ''}`;
+            updateWordCount(`output${index + 1}-text`, `output${index + 1}-word-count`);
           }
         });
 
         inputTextArea.value = '';
-        if (wordCountDiv) wordCountDiv.textContent = '0 từ';
+        updateWordCount('split-input-text', 'split-input-word-count');
         showNotification(translations[currentLang].splitSuccess, 'success');
       });
     } else {
@@ -921,4 +943,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('Lỗi trong attachTabEvents:', error);
     showNotification('Có lỗi khi gắn sự kiện cho tab, vui lòng tải lại!', 'error');
   }
+
+  // Khởi tạo chế độ Chia 2
+  updateSplitModeUI(2);
 });
