@@ -197,7 +197,9 @@ textarea {
   font-size: 14px;
   resize: vertical;
   box-sizing: border-box;
-  margin-bottom: 0; /* Xóa margin-bottom để đếm từ sát textarea */
+  margin-bottom: 0;
+  outline: none; /* Loại bỏ viền focus */
+  overflow: hidden; /* Loại bỏ thanh cuộn */
 }
 
 #output-text, #output1-text, #output2-text, #output3-text, #output4-text {
@@ -221,23 +223,22 @@ textarea {
   align-items: stretch;
 }
 
-/* Điều chỉnh kích thước cho tab Chia Chương */
 .split-container.split-2 .input-section,
 .split-container.split-2 .output-section {
   flex: 1;
-  max-width: 33.33%; /* 3 ô vừa khít một hàng */
+  max-width: 33.33%;
 }
 
 .split-container.split-3 .input-section,
 .split-container.split-3 .output-section {
   flex: 1;
-  max-width: 25%; /* 4 ô vừa khít một hàng */
+  max-width: 25%;
 }
 
 .split-container.split-4 .input-section,
 .split-container.split-4 .output-section {
   flex: 1;
-  max-width: 20%; /* 5 ô vừa khít một hàng */
+  max-width: 20%;
 }
 
 #split-input-text, #output1-text, #output2-text, #output3-text, #output4-text {
@@ -247,14 +248,16 @@ textarea {
   font-size: 12px;
   resize: vertical;
   box-sizing: border-box;
-  margin-bottom: 0; /* Xóa margin-bottom để đếm từ sát textarea */
+  margin-bottom: 0;
+  outline: none; /* Loại bỏ viền focus */
+  overflow: hidden; /* Loại bỏ thanh cuộn */
 }
 
 .word-count {
   font-size: 12px;
   color: #6c757d; /* Màu xám nhạt */
   margin-top: 5px;
-  margin-bottom: 5px; /* Khoảng cách nhỏ giữa đếm từ và nút */
+  margin-bottom: 5px;
   text-align: left;
 }
 
@@ -347,7 +350,6 @@ textarea {
   font-size: 14px;
 }
 
-/* Responsive design */
 @media (max-width: 768px) {
   .split-container {
     flex-wrap: wrap;
