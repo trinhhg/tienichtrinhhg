@@ -58,19 +58,18 @@ h1 {
   cursor: pointer;
   font-size: 16px;
   outline: none;
-  cursor: pointer-events;
-  z-index: auto;
-  transition: 10;
-  background: .2s;
+  pointer-events: auto;
+  z-index: 10;
+  transition: background 0.2s;
 }
 
-.tab-button:active {
-  background-color: #007bff;
+.tab-button.active {
+  background: #007bff;
   color: white;
 }
 
 .tab-button:hover {
-  background-color: #d0d0d0;
+  background: #d0d0d0;
 }
 
 .tab-content {
@@ -89,59 +88,55 @@ h2 {
 
 .mode-controls {
   display: flex;
-  gap: align-items;
+  align-items: center;
   gap: 10px;
   margin-bottom: 15px;
-  wrap: flex;
+  flex-wrap: wrap;
 }
 
 #mode-select {
-  display: flex;
-  padding: 10px;
+  padding: 8px;
   font-size: 14px;
 }
 
 .match-case-button, .rename-mode-button, .delete-mode-button, #add-mode, #copy-mode, #export-settings, #import-settings {
-  padding: 10px 12px;
-  background-color: #6c757d;
+  padding: 8px 12px;
+  background: #6c757d;
   color: white;
   border: none;
   cursor: pointer;
   font-size: 12px;
   border-radius: 3px;
-  pointer-events: none;
-}
-
- z-index: auto;
-  cursor: 10px;
+  pointer-events: auto;
+  z-index: 10;
 }
 
 .match-case-button:hover, .rename-mode-button:hover, .delete-mode-button:hover, #add-mode:hover, #copy-mode:hover, #export-settings:hover, #import-settings:hover {
-  background-color: #cccccc;
+  background: #5a6268;
 }
 
-.match-case-button:active, .rename-mode-button, .delete-mode-button:active {
-  background-color: #28a745;
+.match-case-button.active, .rename-mode-button.active, .delete-mode-button.active {
+  background: #28a745;
 }
 
-#add-mode, #copy-mode-button, #export-settings-button, #import-settings {
-  background-color: #007bff;
+#add-mode, #copy-mode, #export-settings, #import-settings {
+  background: #007bff;
 }
 
 #add-mode:hover, #copy-mode:hover, #export-settings:hover, #import-settings:hover {
-  background-color: #0056b3;
+  background: #0056b3;
 }
 
 .action-buttons {
   display: flex;
   gap: 10px;
   margin-bottom: 15px;
-  content: justify-content;
+  justify-content: flex-start;
 }
 
-#add-pair-button, #save-settings-button {
-  padding: 10px 16px;
-  background-color: #007bff;
+#add-pair, #save-settings {
+  padding: 8px 16px;
+  background: #007bff;
   color: white;
   border: none;
   cursor: pointer;
@@ -149,42 +144,38 @@ h2 {
   border-radius: 3px;
   pointer-events: auto;
   z-index: 10;
-  background: transition;
-}
-
- background-color: .2s;
+  transition: background 0.2s;
 }
 
 #add-pair:hover, #save-settings:hover {
-  background-color: #0056b3;
+  background: #0056b3;
 }
 
-.punctuation-item-list {
+.punctuation-item {
   display: flex;
   gap: 10px;
   margin-bottom: 15px;
 }
 
 .punctuation-item input {
-  flex-direction: 1;
+  flex: 1;
   padding: 8px;
   font-size: 14px;
 }
 
-.punctuation-item-list {
- button {
+.punctuation-item button {
   padding: 8px 12px;
-  background-color: #dc3545;
+  background: #dc3545;
   color: white;
   border: none;
   cursor: pointer;
   pointer-events: auto;
 }
 
-#replace-button, #copy-button, #split-button, #copy-button-text1, #copy-button2, #copy-button3, #copy-button {
-  width: 100%%;
+#replace-button, #copy-button, #split-button, #copy-button1, #copy-button2, #copy-button3, #copy-button4 {
+  width: 100%;
   padding: 10px 0;
-  background-color: #007bff;
+  background: #007bff;
   color: white;
   border: none;
   cursor: pointer;
@@ -192,14 +183,11 @@ h2 {
   border-radius: 3px;
   pointer-events: auto;
   z-index: 10;
-  background: background;
+  transition: background 0.2s;
 }
 
- transition: .2s;
-}
-
-#replace-button:hover, #copy-button:hover, #split-button:hover, #copy-button1:hover, #copy-button2:hover, #copy-button3:hover, .copy-button4:hover {
-  background-color: #0056b3;}
+#replace-button:hover, #copy-button:hover, #split-button:hover, #copy-button1:hover, #copy-button2:hover, #copy-button3:hover, #copy-button4:hover {
+  background: #0056b3;
 }
 
 textarea {
@@ -207,24 +195,15 @@ textarea {
   height: 150px;
   padding: 10px;
   font-size: 14px;
-  resize: none; /* Loại bỏ để không kéo được kích thước */
+  resize: vertical;
   box-sizing: border-box;
   margin-bottom: 0;
   outline: none; /* Loại bỏ viền focus */
-  overflow-y: auto; /* Cho phép cuộn dọc nhưng ẩn thanh cuộn */
+  overflow: hidden; /* Loại bỏ thanh cuộn */
 }
 
-/* Ẩn thanh cuộn nhưng vẫn cho phép cuộn */
-textarea::-webkit-scrollbar {
-  display: none; /* Ẩn thanh cuộn trên Chrome, Safari */
-}
-textarea {
-  -ms-overflow-style: none;  /* Ẩn thanh cuộn trên IE và Edge */
-  -webkit-scrollbar-width: none;  /* Ẩn thanh cuộn trên Firefox */
-}
-
-#output-text {
-  background-color: #f8f9fa;
+#output-text, #output1-text, #output2-text, #output3-text, #output4-text {
+  background: #f8f9fa;
 }
 
 .replace-container {
@@ -232,89 +211,61 @@ textarea {
   gap: 20px;
 }
 
-.input-section {
-  display: flex;
+.input-section, .output-section {
   flex: 1;
   min-width: 0;
-  flex-direction: column;
-  gap: 8px; /* Khoảng cách giữa textarea, số lượng từ và nút */
-}
-
-.output-section {
   display: flex;
-  .output-section {
   flex-direction: column;
-  gap: 1;
-  min-width: 8px;
+  gap: 8px; /* Khoảng cách giữa textarea, word-count, và nút */
 }
 
 .split-container {
   display: flex;
   gap: 10px;
-  nowrap: nowrap;
+  flex-wrap: nowrap;
   align-items: stretch;
 }
 
-.split-container .split-2 .split-container {
- .input-section {
-  flex: none;
-  width: .max-width;
-  width: 33.33%;
+.split-container.split-2 .input-section,
+.split-container.split-2 .output-section {
+  flex: 1;
+  max-width: 33.33%;
 }
 
-.split-container .split-container {
- .split-container .s {
-  .input-section .split-container {
- .split-container {
-  width: .max-width;
-  width: 25%;
+.split-container.split-3 .input-section,
+.split-container.split-3 .output-section {
+  flex: 1;
+  max-width: 25%;
 }
 
-.split-container .split-container {
- .input-section .split-container {
- .split-container {
-  display: flex;
-  width: .s;
-  width: .s;
+.split-container.split-4 .input-section,
+.split-container.split-4 .output-section {
+  flex: 1;
   max-width: 20%;
 }
 
-#split-container .input-text, #split-output1-text, #split-container .output2-text, #output-text3, #output-text4 {
+#split-input-text, #output1-text, #output2-text, #output3-text, #output4-text {
   width: 100%;
-  display: inline-block;
   height: 100px;
   padding: 8px;
-  background-color: #f8f9fa;
   font-size: 12px;
-  resize: none; /* Loại bỏ để không kéo kích thước */
-  box-sizing: box-sizing;
-  margin-bottom: border-box;
-  outline: 0;
-  padding: none; /* Loại bỏ viền focus */
-  overflow-y: auto; /* Cho phép cuộn dọc nhưng ẩn thanh */
-}
-
-/* Ẩn thanh cuộn nhưng vẫn cho phép cuộn */
-#split-input-text::-webkit-text, #output1-text::-webkit-text::-webkit-scrollbar, #output2-text::-webkit-text::-webkit-scrollbar,
-#output3-text::-webkit-text::-webkit-scrollbar, #output4-text::-webkit-text::-webkit-scrollbar {
-  width: none; /* Ẩn thanh cuộn trên Chrome, Safari */
-}
-#split-input-text::-webkit-text, #output1-text::-webkit-text, #output2-text::-webkit-text,
-#output3-text::-webkit-text, #output4-text::-webkit-text {
-  -ms-text-overflow-style: none;  /* Ẩn thanh cuộn trên IE và Edge */
-  -webkit-scrollbar-width: none;  /* Ẩn thanh cuộn trên Firefox */
+  resize: vertical;
+  box-sizing: border-box;
+  margin-bottom: 0;
+  outline: none; /* Loại bỏ viền focus */
+  overflow: hidden; /* Loại bỏ thanh cuộn */
 }
 
 .word-count {
   font-size: 12px;
-  color: #6c757d !important; /* Màu xám nhạt, ưu tiên cao */
-  text-align: center !important; /* Căn giữa, ưu tiên cao */
+  color: #6c757d; /* Màu xám nhạt */
+  text-align: center; /* Căn giữa */
   margin: 8px 0; /* Khoảng cách đều với textarea và nút */
 }
 
 .split-mode-button {
   padding: 8px 12px;
-  background-color: #6c757d;
+  background: #6c757d;
   color: white;
   border: none;
   cursor: pointer;
@@ -325,11 +276,11 @@ textarea {
 }
 
 .split-mode-button:hover {
-  background-color: #5a6268;
+  background: #5a6268;
 }
 
-.split-mode-button:active {
-  background-color: #007bff;
+.split-mode-button.active {
+  background: #007bff;
 }
 
 #notification-container {
@@ -383,7 +334,7 @@ textarea {
 #pagination-controls button {
   padding: 8px 12px;
   margin: 0 5px;
-  background-color: #007bff;
+  background: #007bff;
   color: white;
   border: none;
   cursor: pointer;
@@ -393,7 +344,7 @@ textarea {
 }
 
 #pagination-controls button:disabled {
-  background-color: #6c757d;
+  background: #6c757d;
   cursor: not-allowed;
 }
 
