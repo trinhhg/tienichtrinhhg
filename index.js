@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
         '<': '&lt;',
         '>': '&gt;',
         '"': '&quot;',
-        "'": '''
+        "'": '&apos;' // Sửa lỗi: thay ''' bằng &apos;
       };
       return str.replace(/[&<>"']/g, match => htmlEntities[match] || match);
     } catch (error) {
@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateButtonStates() {
     const matchCaseButton = document.getElementById('match-case');
     if (matchCaseButton) {
-      matchCaseButton.textContent = matchCaseEnabled ? translations[currentLang].matchCaseOn : translations[currentLang].matchCaseOff;
+      matchCaseButton.textContent = matchCaseEnabled ? translations[currentLang].matchCaseOn : translations[lang].matchCaseOff;
       matchCaseButton.style.background = matchCaseEnabled ? '#28a745' : '#6c757d';
     } else {
       console.error('Không tìm thấy nút Match Case');
@@ -710,7 +710,7 @@ document.addEventListener('DOMContentLoaded', () => {
         outputTextAreas.forEach((textarea, index) => {
           if (textarea) {
             textarea.value = `Chương ${chapterNum}.${index + 1}${chapterTitle}\n\n${parts[index] || ''}`;
-            updateWordCount(`output${index + 1}-textContent}`);
+            updateWordCount(`output${index + 1}-text`, `output${index + 1}-word-count`);
           }
         });
 
@@ -809,7 +809,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = 'url';
+        a.href = url;
         a.download = 'extension_settings.json';
         a.click();
         URL.revokeObjectURL(url);
@@ -839,7 +839,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Lỗi khi phân tích JSON:', err);
                 showNotification(translations[currentLang].importError, 'error');
               }
-            });
+            };
             reader.readAsText(file);
           }
         });
@@ -870,9 +870,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const replace = item.querySelector('.replace')?.value || '';
       if (find) pairs.push({ find, replace });
       console.log('Đang lưu cặp:', { find, replace });
-      });
+    });
 
-    let settings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || { modes: { default: { pairs: [], matchCase: false } };
+    let settings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || { modes: { default: { pairs: [], matchCase: false } } };
     settings.modes[currentMode] = {
       pairs: pairs,
       matchCase: matchCaseEnabled
@@ -923,7 +923,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateLanguage('vn');
   } catch (error) {
     console.error('Lỗi trong updateLanguage:', error);
-    showNotification('Có lỗi khi cập nhật ngôn ngữ, nhưng ứng dụng vẫn hoạt động!', 'error');
+    showNotification('Có lỗi xảy ra khi cập nhật ngôn ngữ, nhưng ứng dụng vẫn hoạt động!', 'error');
   }
 
   try {
@@ -935,18 +935,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   try {
     attachButtonEvents();
-  } catch (error) {
-    console.error('Lỗi trong attachButtonEvents:', error);
-    showNotification('Có lỗi khi gắn sự kiện cho nút, vui lòng tải lại!', 'error');
-  }
+    } catch (error) {
+      console.error('Lỗi trong attachButtonEvents:', error);
+      showNotification('Có lỗi khi gắn sự kiện cho nút, vui lòng tải lại!', 'error');
+    }
 
-  try {
-    attachTabEvents();
-  } catch (error) {
-    console.error('Lỗi trong attachTabEvents:', error);
-    showNotification('Có lỗi khi gắn sự kiện cho tab, vui lòng tải lại!', 'error');
-  }
+    try {
+      attachTabEvents();
+      } catch (error) {
+        console.error('Lỗi trong attachTabEvents:', error);
+        showNotification('Có lỗi khi gắn sự kiện cho tab, vui lòng tải lại!', 'error');
+      }
 
-  // Khởi tạo chế độ Chia 2
-  updateSplitModeUI(2);
+    // Khởi tạo chế độ Chia 2
+    updateSplitModeUI(2);
 });
