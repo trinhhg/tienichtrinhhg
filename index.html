@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tiện Ích Của Trịnh Hg</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <div class="container">
+    <h1 id="app-title">Tiện Ích Của Trịnh Hg</h1>
+    <div class="contact-info">
+      <p id="contact-text1">
+        - Nếu có ý tưởng mới hãy liên hệ facebook trao đổi với mình nhé: 
+        <a href="https://www.facebook.com/share/19eFDC5A4R/" target="_blank" id="facebook-link">https://www.facebook.com/share/19eFDC5A4R/</a>
+      </p>
+      <p id="contact-text2">
+        - Đọc truyện trên Truyện HD để ủng hộ mình nhé: 
+        <a href="https://truyenhdt.com/author/1704071852/" target="_blank" id="truyenhd-link">https://truyenhdt.com/author/1704071852/</a>
+      </p>
+    </div>
+    <div class="tabs">
+      <button class="tab-button active" data-tab="settings" id="settings-tab">Settings</button>
+      <button class="tab-button" data-tab="replace" id="replace-tab">Replace</button>
+      <button class="tab-button" data-tab="split" id="split-tab">Chia Chương</button>
+    </div>
+
+    <!-- Tab Settings -->
+    <div id="settings" class="tab-content active">
+      <h2 id="settings-title">Cài đặt tìm kiếm và thay thế</h2>
+      <div class="mode-controls">
+        <label for="mode-select" id="mode-label">Chọn chế độ:</label>
+        <select id="mode-select">
+          <option value="default">Mặc định</option>
+        </select>
+        <button id="add-mode">Thêm chế độ mới</button>
+        <button id="copy-mode">Sao Chép Chế Độ</button>
+        <button id="match-case" class="match-case-button">Match Case: Tắt</button>
+        <button id="export-settings">Xuất Cài Đặt</button>
+        <button id="import-settings">Nhập Cài Đặt</button>
+        <button id="rename-mode" class="rename-mode-button" style="display: none;">Đổi Tên</button>
+        <button id="delete-mode" class="delete-mode-button" style="display: none;">Xóa Chế Độ</button>
+      </div>
+      <div class="action-buttons">
+        <button id="add-pair">Thêm</button>
+        <button id="save-settings">Lưu cài đặt</button>
+      </div>
+      <div id="punctuation-list">
+        <div class="punctuation-item">
+          <input type="text" class="find" placeholder="Tìm ví dụ dấu phẩy" id="find-placeholder">
+          <input type="text" class="replace" placeholder="Thay thế ví dụ dấu chấm phẩy" id="replace-placeholder">
+          <button class="remove" id="remove-button">Xóa</button>
+        </div>
+      </div>
+      <div id="pagination-controls" style="text-align: center; margin-top: 10px;"></div>
+    </div>
+
+    <!-- Tab Replace -->
+    <div id="replace" class="tab-content">
+      <h2 id="replace-title">Thay thế Dấu câu</h2>
+      <div class="replace-container">
+        <div class="input-section">
+          <textarea id="input-text" placeholder="Dán văn bản của bạn vào đây..."></textarea>
+          <div id="replace-word-count">0 từ</div>
+          <button id="replace-button">Thay thế</button>
+        </div>
+        <div class="output-section">
+          <textarea id="output-text" readonly placeholder="Kết quả sẽ xuất hiện ở đây..."></textarea>
+          <button id="copy-button">Sao chép</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Chia Chương -->
+    <div id="split" class="tab-content">
+      <h2 id="split-title">Chia Chương</h2>
+      <div class="mode-controls">
+        <button class="split-mode-button active" data-split-mode="2" id="split-mode-2">Chia 2</button>
+        <button class="split-mode-button" data-split-mode="3" id="split-mode-3">Chia 3</button>
+        <button class="split-mode-button" data-split-mode="4" id="split-mode-4">Chia 4</button>
+      </div>
+      <div class="split-container">
+        <div class="input-section">
+          <textarea id="split-input-text" placeholder="Dán văn bản của bạn vào đây..."></textarea>
+          <div id="split-word-count">0 từ</div>
+          <button id="split-button">Chia Chương</button>
+        </div>
+        <div class="output-section">
+          <textarea id="output1-text" readonly placeholder="Kết quả chương 1 sẽ xuất hiện ở đây..."></textarea>
+          <button id="copy-button1">Sao chép 1</button>
+        </div>
+        <div class="output-section">
+          <textarea id="output2-text" readonly placeholder="Kết quả chương 2 sẽ xuất hiện ở đây..."></textarea>
+          <button id="copy-button2">Sao chép 2</button>
+        </div>
+        <div class="output-section" id="output3-section" style="display: none;">
+          <textarea id="output3-text" readonly placeholder="Kết quả chương 3 sẽ xuất hiện ở đây..."></textarea>
+          <button id="copy-button3">Sao chép 3</button>
+        </div>
+        <div class="output-section" id="output4-section" style="display: none;">
+          <textarea id="output4-text" readonly placeholder="Kết quả chương 4 sẽ xuất hiện ở đây..."></textarea>
+          <button id="copy-button4">Sao chép 4</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="notification-container"></div>
+
+  <script src="index.js"></script>
+</body>
+</html>
