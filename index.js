@@ -69,10 +69,10 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       if (typeof str !== 'string') return '';
       const htmlEntities = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
+        '&': '&',
+        '<': '<',
+        '>': '>',
+        '"': '"',
         "'": '\'' // Sửa lỗi: sử dụng ký tự nháy đơn thoát
       };
       return str.replace(/[&<>"']/g, match => htmlEntities[match] || match);
@@ -83,6 +83,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateLanguage(lang) {
+    if (!translations[lang]) {
+      console.error(`Ngôn ngữ ${lang} không được hỗ trợ`);
+      return;
+    }
     currentLang = lang;
     document.documentElement.lang = lang;
 
@@ -171,14 +175,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const replaceInput = item.querySelector('.replace');
         const removeBtn = item.querySelector('.remove');
         if (findInput) findInput.placeholder = translations[lang].findPlaceholder;
-        if (replaceInput) {
-    replaceInput.placeholder = translations[currentLang]?.replacePlaceholder || 'Thay thế văn bản'; // Cung cấp giá trị mặc định
-}
+        if (replaceInput) replaceInput.placeholder = translations[lang].replacePlaceholder;
         if (removeBtn) removeBtn.textContent = translations[lang].removeButton;
       });
     } catch (error) {
       console.error('Chi tiết lỗi trong updateLanguage:', error);
-      throw error; // Ném lại để khối try-catch bên ngoài xử lý
+      throw error;
     }
   }
 
@@ -489,7 +491,7 @@ document.addEventListener('DOMContentLoaded', () => {
       buttons.copyModeButton.addEventListener('click', () => {
         console.log('Đã nhấp vào nút Sao Chép Chế Độ');
         const newMode = prompt(translations[currentLang].newModePrompt);
-        if (newMode && !newMode.includes('mode_') && newMode.trim() !== '' && newMode !== 'default') {
+        if (newMode && !newName.includes('mode_') && newMode.trim() !== '' && newMode !== 'default') {
           let settings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || { modes: { default: { pairs: [], matchCase: false } } };
           if (settings.modes[newMode]) {
             showNotification(translations[currentLang].invalidModeName, 'error');
@@ -913,6 +915,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         button.classList.add('active');
       });
+    });
   }
 
   function escapeRegExp(string) {
@@ -938,6 +941,10 @@ document.addEventListener('DOMContentLoaded', () => {
   } catch (error) {
     console.error('Lỗi trong attachButtonEvents:', error);
     showNotification('Có lỗi khi gắn sự kiện cho nút, vui lòng tải lại!', 'error');
+  }
+
+  try {
+    attachTabEvents();
   } catch (error) {
     console.error('Lỗi trong attachTabEvents:', error);
     showNotification('Có lỗi khi gắn sự kiện cho tab, vui lòng tải lại!', 'error');
