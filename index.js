@@ -171,7 +171,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const replaceInput = item.querySelector('.replace');
         const removeBtn = item.querySelector('.remove');
         if (findInput) findInput.placeholder = translations[lang].findPlaceholder;
-        if (replaceInput) replaceInput.placeholder = translations[lang].replacePlaceholder;
+        if (replaceInput) {
+    replaceInput.placeholder = translations[currentLang]?.replacePlaceholder || 'Thay thế văn bản'; // Cung cấp giá trị mặc định
+}
         if (removeBtn) removeBtn.textContent = translations[lang].removeButton;
       });
     } catch (error) {
