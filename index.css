@@ -278,7 +278,7 @@ textarea::-webkit-scrollbar {
 
 .word-count {
   font-size: 11px; /* Thu nhỏ kích thước chữ */
-  color: #F0E8E8; /* Màu xám của Canva */
+  color: #F0E8E8; /* Cập nhật màu xám của Canva */
   text-align: center; /* Căn giữa */
   margin: 0; /* Xóa khoảng cách để sát với textarea và nút */
 }
