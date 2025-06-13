@@ -353,15 +353,15 @@ document.addEventListener('DOMContentLoaded', () => {
     output3Section.style.display = mode >= 3 ? 'block' : 'none';
     output4Section.style.display = mode === 4 ? 'block' : 'none';
 
-    // Reset nội dung và bộ đếm từ về 0 khi chuyển chế độ
+    // Reset nội dung và bộ đếm từ về 0 cho tất cả các ô khi chuyển chế độ
     ['split-input-text', 'output1-text', 'output2-text', 'output3-text', 'output4-text'].forEach(id => {
       const textarea = document.getElementById(id);
       if (textarea) {
-        textarea.value = '';
-        updateWordCount(id, `${id.replace('split-input-text', 'split-input')}-word-count`);
+        textarea.value = ''; // Reset nội dung
+        updateWordCount(id, `${id.replace('split-input-text', 'split-input')}-word-count`); // Reset bộ đếm từ
       }
     });
-    console.log(`Đã reset bộ đếm từ về 0 cho chế độ Chia ${mode}`);
+    console.log(`Đã reset bộ đếm từ về 0 cho tất cả các ô khi chuyển sang chế độ Chia ${mode}`);
   }
 
   function attachButtonEvents() {
