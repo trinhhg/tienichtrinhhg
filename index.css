@@ -230,7 +230,7 @@ textarea::-webkit-scrollbar {
   display: flex;
   gap: 10px;
   flex-wrap: nowrap;
-  align-items: stretch;
+  align-items: stretch; /* Gióng thẳng hàng các ô dựa trên chiều cao lớn nhất */
 }
 
 .split-container.split-2 .input-section,
@@ -243,12 +243,14 @@ textarea::-webkit-scrollbar {
 .split-container.split-3 .output-section {
   flex: 1;
   max-width: 25%;
+  height: 100%; /* Đảm bảo chiều cao đồng đều */
 }
 
 .split-container.split-4 .input-section,
 .split-container.split-4 .output-section {
   flex: 1;
   max-width: 20%;
+  height: 100%; /* Đảm bảo chiều cao đồng đều */
 }
 
 #split-input-text, #output1-text, #output2-text, #output3-text, #output4-text {
@@ -275,7 +277,7 @@ textarea::-webkit-scrollbar {
 }
 
 .word-count {
-  font-size: 11px; /* Thu nhỏ kích thước chữ từ 12px xuống 11px */
+  font-size: 11px; /* Thu nhỏ kích thước chữ */
   color: #F0E8E8; /* Màu xám của Canva */
   text-align: center; /* Căn giữa */
   margin: 0; /* Xóa khoảng cách để sát với textarea và nút */
