@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
       settingsExported: 'Đã xuất cài đặt thành công!',
       settingsImported: 'Đã nhập cài đặt thành công!',
       importError: 'Lỗi khi nhập cài đặt!',
-      wordCount: 'Words: {count}' // Đổi từ "Số từ: {count}" thành "Words: {count}"
+      wordCount: 'Words: {count}'
     }
   };
 
@@ -353,7 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
     output3Section.style.display = mode >= 3 ? 'block' : 'none';
     output4Section.style.display = mode === 4 ? 'block' : 'none';
 
-    // Reset nội dung và bộ đếm từ về 0
+    // Reset nội dung và bộ đếm từ về 0 khi chuyển chế độ
     ['split-input-text', 'output1-text', 'output2-text', 'output3-text', 'output4-text'].forEach(id => {
       const textarea = document.getElementById(id);
       if (textarea) {
