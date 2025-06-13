@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
       settingsExported: 'Đã xuất cài đặt thành công!',
       settingsImported: 'Đã nhập cài đặt thành công!',
       importError: 'Lỗi khi nhập cài đặt!',
-      wordCount: 'Số từ: {count}' // Thêm vào translations để hỗ trợ định dạng mới
+      wordCount: 'Words: {count}' // Đổi từ "Số từ: {count}" thành "Words: {count}"
     }
   };
 
@@ -712,7 +712,7 @@ document.addEventListener('DOMContentLoaded', () => {
         outputTextAreas.forEach((textarea, index) => {
           if (textarea) {
             textarea.value = `Chương ${chapterNum}.${index + 1}${chapterTitle}\n\n${parts[index] || ''}`;
-            updateWordCount(`output${index + 1}-text`, `output${index + 1}-word- count`);
+            updateWordCount(`output${index + 1}-text`, `output${index + 1}-word-count`);
           }
         });
 
