@@ -3,8 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Firebase SDK imports (using compat version)
   const { initializeApp } = firebase;
-  const { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } = firebase;
-  const { getFirestore, doc, getDoc } = firebase;
+  const { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } = firebase; // Sửa từ firebase.auth thành firebase
+  const { getFirestore, doc, getDoc } = firebase; // Sửa từ firebase.firestore thành firebase
 
   // Firebase configuration
   const firebaseConfig = {
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+  const auth = getAuth(app); // Sử dụng getAuth từ firebase
   const db = getFirestore(app);
 
   // Translations object
