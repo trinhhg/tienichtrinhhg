@@ -209,12 +209,12 @@ textarea {
   margin-bottom: 0;
   outline: none;
   overflow-y: auto;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE và Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 textarea::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
 }
 
 #output-text, #output1-text, #output2-text, #output3-text, #output4-text {
@@ -271,16 +271,16 @@ textarea::-webkit-scrollbar {
   margin-bottom: 0;
   outline: none;
   overflow-y: auto;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE và Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-#split-input-text::-webkit-scrollbar, 
-#output1-text::-webkit-scrollbar, 
-#output2-text::-webkit-scrollbar, 
-#output3-text::-webkit-scrollbar, 
+#split-input-text::-webkit-scrollbar,
+#output1-text::-webkit-scrollbar,
+#output2-text::-webkit-scrollbar,
+#output3-text::-webkit-scrollbar,
 #output4-text::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
 }
 
 .word-count {
@@ -471,6 +471,8 @@ textarea::-webkit-scrollbar {
   border-radius: 25px;
   background: #f1f1f1;
   font-size: 14px;
+  box-sizing: border-box;
+  max-width: 100%;
 }
 
 .login-button {
