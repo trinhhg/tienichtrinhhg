@@ -3,8 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Firebase SDK imports (using compat version)
   const { initializeApp } = firebase;
-  const { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } = firebase; // Sửa từ firebase.auth thành firebase
-  const { getFirestore, doc, getDoc } = firebase; // Sửa từ firebase.firestore thành firebase
+  const { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } = firebase;
+  const { getFirestore, doc, getDoc } = firebase;
 
   // Firebase configuration
   const firebaseConfig = {
@@ -19,8 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app); // Sử dụng getAuth từ firebase
-  const db = getFirestore(app); // Sử dụng getFirestore từ firebase
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
   // Translations object
   const translations = {
@@ -192,15 +192,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Hàm escapeHtml được sửa
   function escapeHtml(str) {
     try {
       if (typeof str !== 'string') return '';
       const htmlEntities = {
-        '&': '&',
-        '<': '<',
-        '>': '>',
-        '"': '"',
-        "'": '''
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&apos;' // Sửa từ ''' thành ' và sử dụng &apos; cho single quote
       };
       return str.replace(/[&<>"']/g, match => htmlEntities[match] || match);
     } catch (error) {
