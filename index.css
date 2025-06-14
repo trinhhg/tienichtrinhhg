@@ -278,7 +278,7 @@ textarea::-webkit-scrollbar {
 
 .word-count {
   font-size: 11px; /* Thu nhỏ kích thước chữ */
-  color: #F0E8E8; /* Cập nhật màu xám của Canva */
+  color: #B0B0B0; /* Màu xám đậm hơn để dễ nhìn */
   text-align: center; /* Căn giữa */
   margin: 0; /* Xóa khoảng cách để sát với textarea và nút */
 }
@@ -301,6 +301,40 @@ textarea::-webkit-scrollbar {
 
 .split-mode-button.active {
   background: #007bff;
+}
+
+.copy-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.copy-buttons button {
+  width: 100%;
+  padding: 10px 0;
+  margin: 0;
+}
+
+.split-container.split-3 .copy-buttons,
+.split-container.split-4 .copy-buttons {
+  align-items: flex-end; /* Căn phải */
+}
+
+.split-container.split-3 .copy-buttons button,
+.split-container.split-4 .copy-buttons button {
+  width: auto; /* Đặt chiều rộng tự động */
+  padding: 10px 15px; /* Điều chỉnh padding để đồng đều */
+}
+
+.split-container.split-3 .copy-buttons #copy-button3,
+.split-container.split-4 .copy-buttons #copy-button3 {
+  margin-right: 0; /* Đặt nút "Sao chép 3" làm mốc */
+}
+
+.split-container.split-3 .copy-buttons button,
+.split-container.split-4 .copy-buttons button {
+  margin-left: auto; /* Đẩy các nút khác sang trái từ mốc "Sao chép 3" */
+  margin-right: 0; /* Loại bỏ margin phải để gióng thẳng */
 }
 
 #notification-container {
