@@ -1,0 +1,23 @@
+name: 🚀 Deploy to GitHub Pages (Secondary Repo)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ✅ Checkout source code
+        uses: actions/checkout@v3
+
+      - name: 🚚 Deploy to GitHub Pages repo
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.TRINOVAVERS }}
+          external_repository: trinovavers/tienichtrinhhg
+          publish_branch: main
+          publish_dir: ./  # Nếu chỉ muốn deploy ./dist hoặc ./build thì thay ở đây
+          commit_message: "🚀 Tự động deploy từ repo chính"
