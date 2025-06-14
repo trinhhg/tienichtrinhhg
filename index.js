@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
         '<': '<',
         '>': '>',
         '"': '"',
-        "'": ''' // Sửa từ ''' thành ' và sử dụng ' cho single quote
+        "'": '&apos;' // Sửa từ ''' thành ' và sử dụng ' cho single quote
       };
       return str.replace(/[&<>"']/g, match => htmlEntities[match] || match);
     } catch (error) {
