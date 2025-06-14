@@ -358,10 +358,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const textarea = document.getElementById(id);
       if (textarea) {
         textarea.value = ''; // Reset nội dung
-        updateWordCount(id, `${id.replace('split-input-text', 'split-input')}-word-count`); // Reset bộ đếm từ
+        updateWordCount(id, `${id.replace('split-input-text', 'split-input')}-word-count`); // Reset bộ đếm từ về "Words: 0"
       }
     });
-    console.log(`Đã reset bộ đếm từ về 0 cho tất cả các ô khi chuyển sang chế độ Chia ${mode}`);
+    console.log(`Đã reset bộ đếm từ về "Words: 0" cho tất cả các ô khi chuyển sang chế độ Chia ${mode}`);
   }
 
   function attachButtonEvents() {
