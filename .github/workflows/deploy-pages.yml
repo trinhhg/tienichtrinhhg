@@ -1,4 +1,4 @@
-name: 🚀 Deploy to GitHub Pages (Secondary Repo)
+name: Deploy to GitHub Pages (Secondary Repo)
 
 on:
   push:
@@ -10,14 +10,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: ✅ Checkout source code
-        uses: actions/checkout@v3
+    - name: Checkout source repo
+      uses: actions/checkout@v3
 
-      - name: 🚚 Deploy to GitHub Pages repo
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          personal_token: ${{ secrets.TRINOVAVERS }}
-          external_repository: trinovavers/tienichtrinhhg
-          publish_branch: main
-          publish_dir: ./  # Nếu chỉ muốn deploy ./dist hoặc ./build thì thay ở đây
-          commit_message: "🚀 Tự động deploy từ repo chính"
+    - name: Deploy to Pages branch of secondary repo
+      run: |
+        git config --global user.email "doicucden@gmail.com"
+        git config --global user.name "GitHub Actions"
+        
+        git clone https://github.com/${{ github.repository }} temp-src
+        cd temp-src
+        mkdir -p temp-pages
+        cp index.html index.css index.js temp-pages/
+        cd temp-pages
+        git init
+        git checkout -b gh-pages
+        git remote add origin https://x-access-token:${{ secrets.TRINOVAVERS }}@github.com/trinovavers/tienichtrinhhg.git
+        git add .
+        git commit -m "Deploy via GitHub Actions"
+        git push -f origin gh-pages
