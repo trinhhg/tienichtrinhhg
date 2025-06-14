@@ -1,11 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOM fully loaded');
 
-  // Firebase SDK imports (using compat version)
-  const { initializeApp } = firebase;
-  const { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } = firebase; // Sửa từ firebase.auth thành firebase
-  const { getFirestore, doc, getDoc } = firebase; // Sửa từ firebase.firestore thành firebase
-
   // Firebase configuration
   const firebaseConfig = {
     apiKey: "AIzaSyB2VklwyVqGX7BgIsZeYannPijYk9_bB1Q",
@@ -17,10 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
     measurementId: "G-LNZQTM2JTD"
   };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app); // Sử dụng getAuth từ firebase
-  const db = getFirestore(app);
+  // Khởi tạo Firebase
+  firebase.initializeApp(firebaseConfig);
+
+  // Lấy auth và firestore theo kiểu compat
+  const auth = firebase.auth();
+  const db = firebase.firestore();
 
   // Translations object
   const translations = {
@@ -108,15 +105,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Hàm kiểm tra thời hạn tài khoản
   function checkAccountExpiration(uid) {
-    const userDocRef = doc(db, "users", uid);
-    return getDoc(userDocRef)
+    const userDocRef = db.collection("users").doc(uid); // Sử dụng db.collection thay vì doc
+    return userDocRef.get()
       .then((docSnap) => {
-        if (docSnap.exists()) {
+        if (docSnap.exists) {
           const expiresAt = new Date(docSnap.data().expiresAt);
           const now = new Date();
           if (now > expiresAt) {
             showNotification(translations[currentLang].accountExpired, 'error');
-            signOut(auth);
+            auth.signOut();
             showLoginUI();
             return false;
           } else {
@@ -124,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         } else {
           showNotification(translations[currentLang].noAccountData, 'error');
-          signOut(auth);
+          auth.signOut();
           showLoginUI();
           return false;
         }
@@ -132,14 +129,14 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch((error) => {
         console.error("Lỗi khi kiểm tra tài khoản:", error);
         showNotification(translations[currentLang].accountCheckError, 'error');
-        signOut(auth);
+        auth.signOut();
         showLoginUI();
         return false;
       });
   }
 
   // Theo dõi trạng thái đăng nhập
-  onAuthStateChanged(auth, (user) => {
+  auth.onAuthStateChanged((user) => { // Sử dụng auth.onAuthStateChanged
     if (user) {
       // Người dùng đã đăng nhập
       checkAccountExpiration(user.uid).then((valid) => {
@@ -161,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      signInWithEmailAndPassword(auth, email, password)
+      auth.signInWithEmailAndPassword(email, password) // Sử dụng auth.signInWithEmailAndPassword
         .then((userCredential) => {
           const user = userCredential.user;
           checkAccountExpiration(user.uid).then((valid) => {
@@ -182,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (logoutLink) {
     logoutLink.addEventListener('click', (e) => {
       e.preventDefault();
-      signOut(auth).then(() => {
+      auth.signOut().then(() => { // Sử dụng auth.signOut
         showLoginUI();
         showNotification('Đã đăng xuất thành công!', 'success');
       }).catch((error) => {
@@ -197,11 +194,11 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       if (typeof str !== 'string') return '';
       const htmlEntities = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&apos;' // Sửa từ ''' thành ' và sử dụng &apos; cho single quote
+        '&': '&',
+        '<': '<',
+        '>': '>',
+        '"': '"',
+        "'": ''' // Sửa từ ''' thành ' và sử dụng ' cho single quote
       };
       return str.replace(/[&<>"']/g, match => htmlEntities[match] || match);
     } catch (error) {
