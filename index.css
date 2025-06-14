@@ -285,9 +285,9 @@ textarea::-webkit-scrollbar {
 
 .word-count {
   font-size: 11px;
-  color: #B0B0B0;
+  color: #666666; /* Màu xám đậm hơn */
   text-align: center;
-  margin: 0;
+  margin: 5px 0;
 }
 
 .split-mode-button {
@@ -322,26 +322,27 @@ textarea::-webkit-scrollbar {
   margin: 0;
 }
 
-.split-container.split-3 .copy-buttons,
-.split-container.split-4 .copy-buttons {
-  align-items: flex-end;
+.split-container.split-3 .input-section,
+.split-container.split-3 .output-section,
+.split-container.split-4 .input-section,
+.split-container.split-4 .output-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.split-container.split-3 .word-count,
+.split-container.split-4 .word-count {
+  text-align: center;
+  width: 100%;
+  margin: 5px 0;
 }
 
 .split-container.split-3 .copy-buttons button,
 .split-container.split-4 .copy-buttons button {
-  width: auto;
-  padding: 10px 15px;
-}
-
-.split-container.split-3 .copy-buttons #copy-button3,
-.split-container.split-4 .copy-buttons #copy-button3 {
-  margin-right: 0;
-}
-
-.split-container.split-3 .copy-buttons button,
-.split-container.split-4 .copy-buttons button {
-  margin-left: auto;
-  margin-right: 0;
+  width: 100%;
+  margin: 0;
 }
 
 #notification-container {
@@ -421,6 +422,10 @@ textarea::-webkit-scrollbar {
   .split-container .output-section {
     max-width: 100%;
     min-width: 100%;
+    align-items: center;
+  }
+  .split-container .word-count {
+    text-align: center;
   }
 }
 
