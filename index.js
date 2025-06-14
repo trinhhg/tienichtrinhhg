@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const translations = {
     vn: {
       appTitle: 'Tiện Ích Của Trịnh Hg',
-      contactText1: '– Gia hạn tài khoản: ',
+      contactText1: '- Gia hạn tài khoản: ',
       settingsTab: 'Settings',
       replaceTab: 'Replace',
       splitTab: 'Chia Chương',
@@ -76,11 +76,15 @@ document.addEventListener('DOMContentLoaded', () => {
       importError: 'Lỗi khi nhập cài đặt!',
       wordCount: 'Words: {count}',
       loginSuccess: 'Đăng nhập thành công!',
-      loginFailed: 'Đăng nhập thất bại. Vui lòng kiểm tra email/mật khẩu hoặc liên hệ admin để gia hạn tài khoản.',
+      loginFailed: 'Đăng nhập thất bại. Vui lòng kiểm tra email/mật khẩu hoặc liên hệ admin để gia hạn.',
       accountExpired: 'Tài khoản đã hết hạn! Vui lòng liên hệ admin để gia hạn.',
+      accountDisabled: 'Tài khoản đã bị vô hiệu hóa! Vui lòng liên hệ admin.',
       noAccountData: 'Không tìm thấy dữ liệu tài khoản.',
       accountCheckError: 'Lỗi khi kiểm tra tài khoản.',
-      logoutText: 'Đăng xuất'
+      logoutSuccess: 'Đã đăng xuất thành công!',
+      logoutText: 'Đăng xuất',
+      loading: 'Đang tải...',
+      accountDeactivated: 'Tài khoản đã bị vô hiệu hóa.'
     }
   };
 
@@ -89,12 +93,38 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentMode = 'default';
   let currentSplitMode = 2; // Mặc định là Chia 2
   const LOCAL_STORAGE_KEY = 'local_settings';
+  let hasShownLoginSuccess = false; // Biến cờ để đảm bảo thông báo đăng nhập thành công chỉ hiển thị một lần
+  let currentVersion = null; // Thay cho localStorage.getItem('appVersion') || '0.0.0'
+
+  // Biến để theo dõi thời gian không hoạt động
+  let inactivityTimeout;
+  const INACTIVITY_LIMIT = 2400000; // 40 phút (2,400,000 ms)
+
+  // Hàm reset bộ đếm thời gian không hoạt động
+  function resetInactivityTimer() {
+    clearTimeout(inactivityTimeout);
+    inactivityTimeout = setTimeout(() => {
+      console.log('Không hoạt động quá lâu, đang tải lại trang...');
+      window.location.reload();
+    }, INACTIVITY_LIMIT);
+  }
+
+  // Gắn sự kiện để phát hiện hoạt động của người dùng
+  ['click', 'mousemove', 'keydown'].forEach(event => {
+    document.addEventListener(event, resetInactivityTimer);
+  });
+
+  // Khởi động bộ đếm thời gian không hoạt động
+  resetInactivityTimer();
 
   // Hàm hiển thị giao diện chính
   function showMainUI() {
     document.querySelector(".container").style.display = "block";
     document.querySelector(".login-container").style.display = "none";
-    showNotification(translations[currentLang].loginSuccess, 'success');
+    if (!hasShownLoginSuccess) {
+      showNotification(translations[currentLang].loginSuccess, 'success');
+      hasShownLoginSuccess = true;
+    }
   }
 
   // Hàm hiển thị form đăng nhập
@@ -103,15 +133,38 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector(".login-container").style.display = "flex";
   }
 
-  // Hàm kiểm tra thời hạn tài khoản
-  function checkAccountExpiration(uid) {
-    const userDocRef = db.collection("users").doc(uid); // Sử dụng db.collection thay vì doc
+  // Hàm hiển thị trạng thái loading
+  function showLoadingUI() {
+    document.querySelector(".container").style.display = "none";
+    document.querySelector(".login-container").style.display = "none";
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = 'loading';
+    loadingDiv.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 16px; color: #333;';
+    loadingDiv.textContent = translations[currentLang].loading;
+    document.body.appendChild(loadingDiv);
+  }
+
+  // Hàm xóa trạng thái loading
+  function hideLoadingUI() {
+    const loadingDiv = document.getElementById('loading');
+    if (loadingDiv) loadingDiv.remove();
+  }
+
+  // Hàm kiểm tra trạng thái tài khoản
+  function checkAccountStatus(uid) {
+    const userDocRef = db.collection("users").doc(uid);
     return userDocRef.get()
       .then((docSnap) => {
         if (docSnap.exists) {
-          const expiresAt = new Date(docSnap.data().expiresAt);
+          const userData = docSnap.data();
+          const expiry = new Date(userData.expiry); // Sử dụng trường expiry
           const now = new Date();
-          if (now > expiresAt) {
+          if (userData.disabled) {
+            showNotification(translations[currentLang].accountDisabled, 'error');
+            auth.signOut();
+            showLoginUI();
+            return false;
+          } else if (now > expiry) {
             showNotification(translations[currentLang].accountExpired, 'error');
             auth.signOut();
             showLoginUI();
@@ -135,17 +188,144 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
 
-  // Theo dõi trạng thái đăng nhập
-  auth.onAuthStateChanged((user) => { // Sử dụng auth.onAuthStateChanged
+  // Theo dõi trường active từ Firestore
+  function monitorAccountActiveStatus(uid) {
+    const userDocRef = db.collection("users").doc(uid);
+    userDocRef.onSnapshot((doc) => {
+      if (!doc.exists || doc.data().active === false) {
+        console.log('Tài khoản không tồn tại hoặc đã bị vô hiệu hóa (active: false)');
+        auth.signOut().then(() => {
+          alert(translations[currentLang].accountDeactivated);
+          showLoginUI();
+          window.location.reload();
+        }).catch((error) => {
+          console.error('Lỗi khi đăng xuất:', error);
+          showNotification('Lỗi khi đăng xuất.', 'error');
+        });
+      }
+    }, (error) => {
+      console.error('Lỗi khi theo dõi tài liệu Firestore:', error);
+      showNotification(translations[currentLang].accountCheckError, 'error');
+    });
+  }
+
+ // Kiểm tra phiên bản mới từ version.json
+async function checkVersionLoop() {
+  try {
+    const response = await fetch('https://trinhhg.github.io/test/version.json?' + Date.now(), {
+      cache: 'no-store'
+    });
+    const data = await response.json();
+
+    if (!currentVersion) {
+      currentVersion = data.version;
+      console.log("📌 Phiên bản hiện tại: " + currentVersion);
+    } else if (data.version !== currentVersion) {
+      console.log("🆕 New version detected: " + data.version + " → Reloading...");
+      location.reload(); // Tự f5 lại trang
+    }
+  } catch (err) {
+    console.error('🚫 Version check failed:', err);
+  }
+
+  // Lặp lại sau mỗi 5s
+  setTimeout(checkVersionLoop, 5000);
+}
+
+checkVersionLoop();
+
+  // Theo dõi trạng thái tài khoản bằng onSnapshot
+  function startAccountStatusCheck() {
+    const user = auth.currentUser;
+    if (!user) {
+      console.log('Không có người dùng để theo dõi trạng thái');
+      return;
+    }
+
+    user.getIdTokenResult().then((idTokenResult) => {
+      if (idTokenResult.claims.disabled) {
+        console.log('Tài khoản bị vô hiệu hóa, đang tải lại trang...');
+        showNotification(translations[currentLang].accountDisabled, 'error');
+        auth.signOut();
+        window.location.reload();
+      } else {
+        const userDocRef = db.collection("users").doc(user.uid);
+        userDocRef.onSnapshot((doc) => {
+          if (!doc.exists) {
+            console.log('Tài khoản không tồn tại');
+            showNotification(translations[currentLang].noAccountData, 'error');
+            auth.signOut();
+            showLoginUI();
+            window.location.reload();
+            return;
+          }
+
+          const userData = doc.data();
+          const expiry = new Date(userData.expiry); // Sử dụng trường expiry
+          const now = new Date();
+
+          if (userData.disabled) {
+            console.log('Tài khoản bị vô hiệu hóa (disabled: true)');
+            showNotification(translations[currentLang].accountDisabled, 'error');
+            auth.signOut();
+            showLoginUI();
+            window.location.reload();
+          } else if (now > expiry) {
+            console.log('Tài khoản đã hết hạn');
+            showNotification(translations[currentLang].accountExpired, 'error');
+            auth.signOut();
+            showLoginUI();
+            window.location.reload();
+          }
+        }, (error) => {
+          console.error('Lỗi khi theo dõi tài liệu Firestore:', error);
+          showNotification(translations[currentLang].accountCheckError, 'error');
+          auth.signOut();
+          showLoginUI();
+          window.location.reload();
+        });
+      }
+    }).catch((error) => {
+      console.error("Lỗi khi kiểm tra token:", error);
+      showNotification(translations[currentLang].accountCheckError, 'error');
+      auth.signOut();
+      showLoginUI();
+      window.location.reload();
+    });
+  }
+
+  // Theo dõi trạng thái đăng nhập và kiểm tra tài khoản
+  showLoadingUI();
+  auth.onAuthStateChanged((user) => {
+    hideLoadingUI();
     if (user) {
-      // Người dùng đã đăng nhập
-      checkAccountExpiration(user.uid).then((valid) => {
-        if (valid) {
-          showMainUI();
+      // Kiểm tra trạng thái vô hiệu hóa từ Firebase Authentication
+      user.getIdTokenResult().then((idTokenResult) => {
+        if (idTokenResult.claims.disabled) {
+          showNotification(translations[currentLang].accountDisabled, 'error');
+          auth.signOut();
+          showLoginUI();
+          window.location.reload();
+        } else {
+          // Kiểm tra thêm từ Firestore và theo dõi active
+          checkAccountStatus(user.uid).then((valid) => {
+            if (valid) {
+              monitorAccountActiveStatus(user.uid); // Bắt đầu theo dõi active
+              showMainUI();
+              startAccountStatusCheck(); // Bắt đầu kiểm tra bằng onSnapshot
+            } else {
+              window.location.reload();
+            }
+          });
         }
+      }).catch((error) => {
+        console.error("Lỗi khi kiểm tra token:", error);
+        showNotification(translations[currentLang].accountCheckError, 'error');
+        auth.signOut();
+        showLoginUI();
+        window.location.reload();
       });
     } else {
-      // Người dùng chưa đăng nhập
       showLoginUI();
     }
   });
@@ -158,12 +338,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      auth.signInWithEmailAndPassword(email, password) // Sử dụng auth.signInWithEmailAndPassword
+      auth.signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
           const user = userCredential.user;
-          checkAccountExpiration(user.uid).then((valid) => {
+          checkAccountStatus(user.uid).then((valid) => {
             if (valid) {
+              monitorAccountActiveStatus(user.uid); // Bắt đầu theo dõi active
               showMainUI();
+              startAccountStatusCheck();
+            } else {
+              window.location.reload();
             }
           });
         })
@@ -179,9 +363,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if (logoutLink) {
     logoutLink.addEventListener('click', (e) => {
       e.preventDefault();
-      auth.signOut().then(() => { // Sử dụng auth.signOut
+      auth.signOut().then(() => {
         showLoginUI();
-        showNotification('Đã đăng xuất thành công!', 'success');
+        showNotification(translations[currentLang].logoutSuccess, 'success');
+        hasShownLoginSuccess = false; // Reset cờ khi đăng xuất
+        window.location.reload();
       }).catch((error) => {
         console.error('Lỗi khi đăng xuất:', error);
         showNotification('Lỗi khi đăng xuất.', 'error');
@@ -189,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Hàm escapeHtml được sửa
+  // Hàm escapeHtml
   function escapeHtml(str) {
     try {
       if (typeof str !== 'string') return '';
@@ -198,9 +384,9 @@ document.addEventListener('DOMContentLoaded', () => {
         '<': '<',
         '>': '>',
         '"': '"',
-        "'": '&apos;' // Sửa từ ''' thành ' và sử dụng ' cho single quote
+        "'": '&apos;'
       };
-      return str.replace(/[&<>"']/g, match => htmlEntities[match] || match);
+      return str.replace(/[&<>"']/g, match => htmlEntities[match]);
     } catch (error) {
       console.error('Lỗi trong escapeHtml:', error);
       return str || '';
@@ -470,7 +656,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const textarea = document.getElementById(id);
       if (textarea) {
         textarea.value = '';
-        updateWordCount(id, `${id.replace('split-input-text', 'split-input')}-word-count`);
+        const counterId = id === 'split-input-text' ? 'split-input-word-count' : `${id}-word-count`;
+        updateWordCount(id, counterId);
       }
     });
     console.log(`Đã reset bộ đếm từ về "Words: 0" cho tất cả các ô khi chuyển sang chế độ Chia ${mode}`);
@@ -627,7 +814,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (buttons.addPairButton) {
       buttons.addPairButton.addEventListener('click', () => {
         console.log('Đã nhấp vào nút Thêm Cặp');
-        addPair('', '');
+        addPair();
       });
     } else {
       console.error('Không tìm thấy nút Thêm Cặp');
@@ -647,6 +834,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateWordCount('input-text', 'input-word-count');
       });
     }
+
     if (buttons.outputText) {
       buttons.outputText.addEventListener('input', () => {
         updateWordCount('output-text', 'output-word-count');
@@ -657,7 +845,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const textarea = document.getElementById(id);
       if (textarea) {
         textarea.addEventListener('input', () => {
-          updateWordCount(id, `${id.replace('split-input-text', 'split-input')}-word-count`);
+          const counterId = id === 'split-input-text' ? 'split-input-word-count' : `${id}-word-count`;
+          updateWordCount(id, counterId);
         });
       }
     });
@@ -673,7 +862,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let settings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || { modes: { default: { pairs: [], matchCase: false } } };
         let outputText = inputTextArea.value;
-        const modeSettings = settings.modes?.[currentMode] || { pairs: [], matchCase: false };
+        const modeSettings = settings.modes[currentMode] || { pairs: [], matchCase: false };
         const pairs = modeSettings.pairs || [];
         if (pairs.length === 0) {
           showNotification(translations[currentLang].noPairsConfigured, 'error');
@@ -684,47 +873,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
         pairs.forEach(pair => {
           let find = pair.find;
-          let replace = pair.replace !== undefined ? pair.replace : '';
+          let replace = pair.replace !== null ? pair.replace : '';
           if (!find) return;
 
-          let findMatch, replaceMatch;
-          const quoteRegex = /^(['"])(.*)\1$/;
-          const parenRegex = /^(\()(.*)(\))$/;
+          let findCore = find;
+          let replaceCore = replace;
 
-          findMatch = find.match(quoteRegex) || find.match(parenRegex);
-          replaceMatch = replace.match(quoteRegex) || replace.match(parenRegex);
-
-          let findCore = findMatch ? findMatch[2] : find;
-          let replaceCore = replaceMatch ? replaceMatch[2] : replace;
-          let findPrefix = findMatch ? findMatch[1] : '';
-          let findSuffix = findMatch ? (findMatch[3] || findMatch[1]) : '';
-          let replacePrefix = replaceMatch ? replaceMatch[1] : (findMatch ? findPrefix : '');
-          let replaceSuffix = replaceMatch ? (replaceMatch[3] || replaceMatch[1]) : (findMatch ? findSuffix : '');
-
-          let regexPattern = escapeRegExp(findCore);
+          const quoteRegex = /^(['"]([^'"]*)\1)$/;
+          const findMatch = find.match(quoteRegex);
           if (findMatch) {
-            regexPattern = `${escapeRegExp(findPrefix)}${regexPattern}${escapeRegExp(findSuffix)}`;
+            findCore = findMatch[2];
+            replaceCore = replace.match(quoteRegex) ? replace.match(quoteRegex)[2] : replace;
           }
 
-          const regexFlags = matchCase ? 'gu' : 'giu';
+          let regexPattern = escapeRegExp(findCore);
+          const regexFlags = matchCase ? 'g' : 'gi';
           const regex = new RegExp(regexPattern, regexFlags);
 
           if (matchCase) {
             outputText = outputText.replace(regex, (match, offset, string) => {
               const isStartOfLine = offset === 0 || string[offset - 1] === '\n';
-              const isAfterPeriod = offset > 1 && string.substring(offset - 2, offset).match(/\.\s/);
-
+              const isAfterPeriod = offset > 1 && string.slice(offset - 2, offset).match(/\.\s*/);
               let finalReplaceCore = replaceCore;
               if (isStartOfLine || isAfterPeriod) {
                 finalReplaceCore = replaceCore.charAt(0).toUpperCase() + replaceCore.slice(1);
               }
-
-              return `${replacePrefix}${finalReplaceCore}${replaceSuffix}`;
+              return finalReplaceCore;
             });
           } else {
-            const replacement = `${replacePrefix}${replaceCore}${replaceSuffix}`;
-            outputText = outputText.replace(regex, replacement);
+            outputText = outputText.replace(regex, replaceCore);
           }
+        });
+
+        pairs.forEach(pair => {
+          let find = pair.find;
+          let replace = pair.replace !== null ? pair.replace : '';
+          if (!find) return;
+
+          let regexPattern = escapeRegExp(find);
+          const regex = new RegExp(regexPattern, matchCase ? 'g' : 'gi');
+          outputText = outputText.replace(regex, replace);
         });
 
         const paragraphs = outputText.split('\n').filter(p => p.trim());
@@ -781,7 +969,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         let text = inputTextArea.value;
-        const chapterRegex = /^Chương\s+(\d+)(?::\s*(.*))?$/m;
+        const chapterRegex = /^Chương\s+(\d+)(?:::\s*(.*))?$/m;
         let chapterNum = 1;
         let chapterTitle = '';
 
@@ -1008,7 +1196,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedTab = document.getElementById(tabName);
         if (selectedTab) {
           selectedTab.classList.add('active');
-          console.log(`Tab ${tabName} đã được kích hoạt`);
+          console.log(`Tab ${tabName} đã được hiển thị`);
         } else {
           console.error(`Không tìm thấy tab với ID ${tabName}`);
         }
@@ -1048,6 +1236,10 @@ document.addEventListener('DOMContentLoaded', () => {
   } catch (error) {
     console.error('Lỗi trong attachTabEvents:', error);
     showNotification('Có lỗi khi gắn sự kiện cho tab, vui lòng tải lại!', 'error');
+  }
+
+  updateSplitModeUI(2);
+}); tải lại!', 'error');
   }
 
   updateSplitModeUI(2);
