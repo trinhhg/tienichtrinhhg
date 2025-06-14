@@ -416,3 +416,74 @@ textarea::-webkit-scrollbar {
     min-width: 100%;
   }
 }
+
+/* ------------------- LOGIN FORM CUSTOM STYLING ------------------- */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+#loginForm {
+  background: white;
+  padding: 30px 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  max-width: 350px;
+  width: 100%;
+}
+
+.login-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+.input-group {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.input-group .icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: #888;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 12px 12px 40px;
+  border: none;
+  border-radius: 25px;
+  background: #f1f1f1;
+  font-size: 14px;
+}
+
+.login-button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  background: #28a745;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 25px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.login-button:hover {
+  background: #218838;
+}
+
+.forgot-text {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 13px;
+  color: #555;
+}
