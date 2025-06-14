@@ -44,6 +44,15 @@ h1 {
   text-decoration: underline;
 }
 
+#logout-link {
+  color: black;
+  text-decoration: none;
+}
+
+#logout-link:hover {
+  text-decoration: underline;
+}
+
 .tabs {
   display: flex;
   margin-bottom: 20px;
@@ -199,7 +208,6 @@ textarea {
   box-sizing: border-box;
   margin-bottom: 0;
   outline: none;
-  /* Ẩn thanh cuộn nhưng vẫn cho phép cuộn */
   overflow-y: auto;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE và Edge */
@@ -223,14 +231,14 @@ textarea::-webkit-scrollbar {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 0; /* Xóa khoảng cách để bộ đếm từ sát với textarea và nút */
+  gap: 0;
 }
 
 .split-container {
   display: flex;
   gap: 10px;
   flex-wrap: nowrap;
-  align-items: stretch; /* Gióng thẳng hàng các ô dựa trên chiều cao lớn nhất */
+  align-items: stretch;
 }
 
 .split-container.split-2 .input-section,
@@ -243,14 +251,14 @@ textarea::-webkit-scrollbar {
 .split-container.split-3 .output-section {
   flex: 1;
   max-width: 25%;
-  height: 100%; /* Đảm bảo chiều cao đồng đều */
+  height: 100%;
 }
 
 .split-container.split-4 .input-section,
 .split-container.split-4 .output-section {
   flex: 1;
   max-width: 20%;
-  height: 100%; /* Đảm bảo chiều cao đồng đều */
+  height: 100%;
 }
 
 #split-input-text, #output1-text, #output2-text, #output3-text, #output4-text {
@@ -262,7 +270,6 @@ textarea::-webkit-scrollbar {
   box-sizing: border-box;
   margin-bottom: 0;
   outline: none;
-  /* Ẩn thanh cuộn nhưng vẫn cho phép cuộn */
   overflow-y: auto;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE và Edge */
@@ -277,10 +284,10 @@ textarea::-webkit-scrollbar {
 }
 
 .word-count {
-  font-size: 11px; /* Thu nhỏ kích thước chữ */
-  color: #B0B0B0; /* Màu xám đậm hơn để dễ nhìn */
-  text-align: center; /* Căn giữa */
-  margin: 0; /* Xóa khoảng cách để sát với textarea và nút */
+  font-size: 11px;
+  color: #B0B0B0;
+  text-align: center;
+  margin: 0;
 }
 
 .split-mode-button {
@@ -317,24 +324,24 @@ textarea::-webkit-scrollbar {
 
 .split-container.split-3 .copy-buttons,
 .split-container.split-4 .copy-buttons {
-  align-items: flex-end; /* Căn phải */
+  align-items: flex-end;
 }
 
 .split-container.split-3 .copy-buttons button,
 .split-container.split-4 .copy-buttons button {
-  width: auto; /* Đặt chiều rộng tự động */
-  padding: 10px 15px; /* Điều chỉnh padding để đồng đều */
+  width: auto;
+  padding: 10px 15px;
 }
 
 .split-container.split-3 .copy-buttons #copy-button3,
 .split-container.split-4 .copy-buttons #copy-button3 {
-  margin-right: 0; /* Đặt nút "Sao chép 3" làm mốc */
+  margin-right: 0;
 }
 
 .split-container.split-3 .copy-buttons button,
 .split-container.split-4 .copy-buttons button {
-  margin-left: auto; /* Đẩy các nút khác sang trái từ mốc "Sao chép 3" */
-  margin-right: 0; /* Loại bỏ margin phải để gióng thẳng */
+  margin-left: auto;
+  margin-right: 0;
 }
 
 #notification-container {
@@ -417,12 +424,14 @@ textarea::-webkit-scrollbar {
   }
 }
 
-/* ------------------- LOGIN FORM CUSTOM STYLING ------------------- */
+/* Login Form Styling */
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 100vh;
   padding: 40px 20px;
+  background: #f4f4f4;
 }
 
 #loginForm {
@@ -486,4 +495,13 @@ textarea::-webkit-scrollbar {
   margin-top: 12px;
   font-size: 13px;
   color: #555;
+}
+
+.forgot-text a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.forgot-text a:hover {
+  text-decoration: underline;
 }
