@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOM fully loaded');
 
-  // Firebase SDK imports
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  // Firebase SDK imports (using compat version)
+  const { initializeApp } = firebase;
+  const { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } = firebase.auth;
+  const { getFirestore, doc, getDoc } = firebase.firestore;
 
   // Firebase configuration
   const firebaseConfig = {
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
         '<': '&lt;',
         '>': '&gt;',
         '"': '&quot;',
-        "'": '&#39;'
+        "'": '&#039;'
       };
       return str.replace(/[&<>"']/g, match => htmlEntities[match] || match);
     } catch (error) {
@@ -311,7 +311,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Các hàm còn lại giữ nguyên
   function updateModeButtons() {
     const renameMode = document.getElementById('rename-mode');
     const deleteMode = document.getElementById('delete-mode');
