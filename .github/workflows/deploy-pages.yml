@@ -17,15 +17,14 @@ jobs:
       run: |
         git config --global user.email "doicucden@gmail.com"
         git config --global user.name "GitHub Actions"
-        
-        git clone https://github.com/${{ github.repository }} temp-src
-        cd temp-src
-        mkdir -p temp-pages
+
+        mkdir temp-pages
         cp index.html index.css index.js temp-pages/
+
         cd temp-pages
         git init
         git checkout -b gh-pages
         git remote add origin https://x-access-token:${{ secrets.TRINOVAVERS }}@github.com/trinovavers/tienichtrinhhg.git
         git add .
-        git commit -m "Deploy via GitHub Actions"
+        git commit -m "Initial deploy to gh-pages"
         git push -f origin gh-pages
