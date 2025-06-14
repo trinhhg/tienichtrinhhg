@@ -1,11 +1,32 @@
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOM fully loaded');
 
+  // Firebase SDK imports
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyB2VklwyVqGX7BgIsZeYannPijYk9_bB1Q",
+    authDomain: "trinhhg-1f8f3.firebaseapp.com",
+    projectId: "trinhhg-1f8f3",
+    storageBucket: "trinhhg-1f8f3.firebasestorage.app",
+    messagingSenderId: "63432174844",
+    appId: "1:63432174844:web:57f18e049b4cf5860e7b79",
+    measurementId: "G-LNZQTM2JTD"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // Translations object
   const translations = {
     vn: {
       appTitle: 'Tiện Ích Của Trịnh Hg',
-      contactText1: '- Nếu có ý tưởng mới hãy liên hệ facebook trao đổi với mình nhé: ',
-      contactText2: '- Đọc truyện trên Truyện HD để ủng hộ mình nhé: ',
+      contactText1: '– Gia hạn tài khoản: ',
       settingsTab: 'Settings',
       replaceTab: 'Replace',
       splitTab: 'Chia Chương',
@@ -56,7 +77,13 @@ document.addEventListener('DOMContentLoaded', () => {
       settingsExported: 'Đã xuất cài đặt thành công!',
       settingsImported: 'Đã nhập cài đặt thành công!',
       importError: 'Lỗi khi nhập cài đặt!',
-      wordCount: 'Words: {count}'
+      wordCount: 'Words: {count}',
+      loginSuccess: 'Đăng nhập thành công!',
+      loginFailed: 'Đăng nhập thất bại. Vui lòng kiểm tra email/mật khẩu hoặc liên hệ admin để gia hạn tài khoản.',
+      accountExpired: 'Tài khoản đã hết hạn! Vui lòng liên hệ admin để gia hạn.',
+      noAccountData: 'Không tìm thấy dữ liệu tài khoản.',
+      accountCheckError: 'Lỗi khi kiểm tra tài khoản.',
+      logoutText: 'Đăng xuất'
     }
   };
 
@@ -66,15 +93,114 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentSplitMode = 2; // Mặc định là Chia 2
   const LOCAL_STORAGE_KEY = 'local_settings';
 
+  // Hàm hiển thị giao diện chính
+  function showMainUI() {
+    document.querySelector(".container").style.display = "block";
+    document.querySelector(".login-container").style.display = "none";
+    showNotification(translations[currentLang].loginSuccess, 'success');
+  }
+
+  // Hàm hiển thị form đăng nhập
+  function showLoginUI() {
+    document.querySelector(".container").style.display = "none";
+    document.querySelector(".login-container").style.display = "flex";
+  }
+
+  // Hàm kiểm tra thời hạn tài khoản
+  function checkAccountExpiration(uid) {
+    const userDocRef = doc(db, "users", uid);
+    return getDoc(userDocRef)
+      .then((docSnap) => {
+        if (docSnap.exists()) {
+          const expiresAt = new Date(docSnap.data().expiresAt);
+          const now = new Date();
+          if (now > expiresAt) {
+            showNotification(translations[currentLang].accountExpired, 'error');
+            signOut(auth);
+            showLoginUI();
+            return false;
+          } else {
+            return true;
+          }
+        } else {
+          showNotification(translations[currentLang].noAccountData, 'error');
+          signOut(auth);
+          showLoginUI();
+          return false;
+        }
+      })
+      .catch((error) => {
+        console.error("Lỗi khi kiểm tra tài khoản:", error);
+        showNotification(translations[currentLang].accountCheckError, 'error');
+        signOut(auth);
+        showLoginUI();
+        return false;
+      });
+  }
+
+  // Theo dõi trạng thái đăng nhập
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // Người dùng đã đăng nhập
+      checkAccountExpiration(user.uid).then((valid) => {
+        if (valid) {
+          showMainUI();
+        }
+      });
+    } else {
+      // Người dùng chưa đăng nhập
+      showLoginUI();
+    }
+  });
+
+  // Xử lý đăng nhập
+  const loginForm = document.getElementById('loginForm');
+  if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          checkAccountExpiration(user.uid).then((valid) => {
+            if (valid) {
+              showMainUI();
+            }
+          });
+        })
+        .catch((error) => {
+          console.error("Lỗi đăng nhập:", error.code, error.message);
+          showNotification(translations[currentLang].loginFailed, 'error');
+        });
+    });
+  }
+
+  // Xử lý đăng xuất
+  const logoutLink = document.getElementById('logout-link');
+  if (logoutLink) {
+    logoutLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      signOut(auth).then(() => {
+        showLoginUI();
+        showNotification('Đã đăng xuất thành công!', 'success');
+      }).catch((error) => {
+        console.error('Lỗi khi đăng xuất:', error);
+        showNotification('Lỗi khi đăng xuất.', 'error');
+      });
+    });
+  }
+
   function escapeHtml(str) {
     try {
       if (typeof str !== 'string') return '';
       const htmlEntities = {
-        '&': '&',
-        '<': '<',
-        '>': '>',
-        '"': '"',
-        "'": '\''
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
       };
       return str.replace(/[&<>"']/g, match => htmlEntities[match] || match);
     } catch (error) {
@@ -90,7 +216,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const elements = {
       appTitle: document.getElementById('app-title'),
       contactText1: document.getElementById('contact-text1'),
-      contactText2: document.getElementById('contact-text2'),
       settingsTab: document.getElementById('settings-tab'),
       replaceTab: document.getElementById('replace-tab'),
       splitTab: document.getElementById('split-tab'),
@@ -121,7 +246,8 @@ document.addEventListener('DOMContentLoaded', () => {
       copyButton3: document.getElementById('copy-button3'),
       copyButton4: document.getElementById('copy-button4'),
       exportSettings: document.getElementById('export-settings'),
-      importSettings: document.getElementById('import-settings')
+      importSettings: document.getElementById('import-settings'),
+      logoutLink: document.getElementById('logout-link')
     };
 
     if (elements.appTitle) elements.appTitle.textContent = translations[lang].appTitle;
@@ -132,15 +258,6 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         console.warn('Không tìm thấy text node cho contactText1, tạo mới');
         elements.contactText1.insertBefore(document.createTextNode(translations[lang].contactText1), elements.contactText1.firstChild);
-      }
-    }
-    if (elements.contactText2) {
-      const textNode = Array.from(elements.contactText2.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
-      if (textNode) {
-        textNode.textContent = translations[lang].contactText2;
-      } else {
-        console.warn('Không tìm thấy text node cho contactText2, tạo mới');
-        elements.contactText2.insertBefore(document.createTextNode(translations[lang].contactText2), elements.contactText2.firstChild);
       }
     }
     if (elements.settingsTab) elements.settingsTab.textContent = translations[lang].settingsTab;
@@ -174,6 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (elements.copyButton4) elements.copyButton4.textContent = translations[lang].copyButton + ' 4';
     if (elements.exportSettings) elements.exportSettings.textContent = translations[lang].exportSettings;
     if (elements.importSettings) elements.importSettings.textContent = translations[lang].importSettings;
+    if (elements.logoutLink) elements.logoutLink.textContent = translations[lang].logoutText;
 
     const punctuationItems = document.querySelectorAll('.punctuation-item');
     punctuationItems.forEach(item => {
@@ -193,6 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Các hàm còn lại giữ nguyên
   function updateModeButtons() {
     const renameMode = document.getElementById('rename-mode');
     const deleteMode = document.getElementById('delete-mode');
@@ -340,25 +459,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const output4Section = document.getElementById('output4-section');
     const splitModeButtons = document.querySelectorAll('.split-mode-button');
 
-    // Cập nhật lớp cho split-container
     splitContainer.classList.remove('split-2', 'split-3', 'split-4');
     splitContainer.classList.add(`split-${mode}`);
 
-    // Cập nhật trạng thái nút
     splitModeButtons.forEach(btn => {
       btn.classList.toggle('active', parseInt(btn.getAttribute('data-split-mode')) === mode);
     });
 
-    // Hiển thị/ẩn các ô output
     output3Section.style.display = mode >= 3 ? 'block' : 'none';
     output4Section.style.display = mode === 4 ? 'block' : 'none';
 
-    // Reset nội dung và bộ đếm từ về 0 cho tất cả các ô khi chuyển chế độ
     ['split-input-text', 'output1-text', 'output2-text', 'output3-text', 'output4-text'].forEach(id => {
       const textarea = document.getElementById(id);
       if (textarea) {
-        textarea.value = ''; // Reset nội dung
-        updateWordCount(id, `${id.replace('split-input-text', 'split-input')}-word-count`); // Reset bộ đếm từ về "Words: 0"
+        textarea.value = '';
+        updateWordCount(id, `${id.replace('split-input-text', 'split-input')}-word-count`);
       }
     });
     console.log(`Đã reset bộ đếm từ về "Words: 0" cho tất cả các ô khi chuyển sang chế độ Chia ${mode}`);
@@ -367,7 +482,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function attachButtonEvents() {
     const buttons = {
       facebookLink: document.getElementById('facebook-link'),
-      truyenhdLink: document.getElementById('truyenhd-link'),
       matchCaseButton: document.getElementById('match-case'),
       deleteModeButton: document.getElementById('delete-mode'),
       renameModeButton: document.getElementById('rename-mode'),
@@ -396,18 +510,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (buttons.facebookLink) {
       buttons.facebookLink.addEventListener('click', () => {
-        console.log('Đã nhấp vào liên kết Facebook');
+        console.log('Đã nhấp vào liên kết Gia hạn tài khoản');
       });
     } else {
-      console.error('Không tìm thấy liên kết Facebook');
-    }
-
-    if (buttons.truyenhdLink) {
-      buttons.truyenhdLink.addEventListener('click', () => {
-        console.log('Đã nhấp vào liên kết TruyenHD');
-      });
-    } else {
-      console.error('Không tìm thấy liên kết TruyenHD');
+      console.error('Không tìm thấy liên kết Gia hạn tài khoản');
     }
 
     if (buttons.matchCaseButton) {
@@ -539,7 +645,6 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Không tìm thấy nút Lưu Cài Đặt');
     }
 
-    // Bộ đếm từ cho tab Replace
     if (buttons.inputText) {
       buttons.inputText.addEventListener('input', () => {
         updateWordCount('input-text', 'input-word-count');
@@ -551,7 +656,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Bộ đếm từ cho tab Chia Chương
     ['split-input-text', 'output1-text', 'output2-text', 'output3-text', 'output4-text'].forEach(id => {
       const textarea = document.getElementById(id);
       if (textarea) {
@@ -949,6 +1053,5 @@ document.addEventListener('DOMContentLoaded', () => {
     showNotification('Có lỗi khi gắn sự kiện cho tab, vui lòng tải lại!', 'error');
   }
 
-  // Khởi tạo chế độ Chia 2
   updateSplitModeUI(2);
 });
