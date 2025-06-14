@@ -1239,8 +1239,4 @@ checkVersionLoop();
   }
 
   updateSplitModeUI(2);
-}); tải lại!', 'error');
-  }
-
-  updateSplitModeUI(2);
 });
