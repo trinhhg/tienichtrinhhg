@@ -164,6 +164,7 @@ h2 {
   display: flex;
   gap: 10px;
   margin-bottom: 15px;
+  align-items: center;
 }
 
 .punctuation-item input {
@@ -263,7 +264,7 @@ textarea::-webkit-scrollbar {
 
 #split-input-text, #output1-text, #output2-text, #output3-text, #output4-text {
   width: 100%;
-  height: 100px;
+  height: 150px; /* Đồng bộ chiều cao */
   padding: 8px;
   font-size: 12px;
   resize: vertical;
@@ -285,7 +286,7 @@ textarea::-webkit-scrollbar {
 
 .word-count {
   font-size: 11px;
-  color: #666666; /* Màu xám đậm hơn */
+  color: #666666;
   text-align: center;
   margin: 5px 0;
 }
@@ -373,6 +374,10 @@ textarea::-webkit-scrollbar {
   background-color: #dc3545;
 }
 
+.notification.info {
+  background-color: #17a2b8;
+}
+
 @keyframes slideIn {
   from {
     transform: translateX(100%);
@@ -414,6 +419,77 @@ textarea::-webkit-scrollbar {
   font-size: 14px;
 }
 
+#pagination-controls:empty {
+  display: none;
+}
+
+#loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 16px;
+  color: #333;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 15px 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 2000;
+}
+
+/* Thêm kiểu dáng cho hộp thoại cập nhật */
+#update-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+}
+
+#update-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10001;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+#update-dialog h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  color: #333;
+}
+
+#update-dialog p {
+  margin: 0 0 20px;
+  font-size: 14px;
+  color: #333;
+}
+
+#update-dialog button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#update-dialog button:hover {
+  background-color: #0056b3;
+}
+
+/* Điều chỉnh giao diện trên mobile */
 @media (max-width: 768px) {
   .split-container {
     flex-wrap: wrap;
@@ -426,6 +502,22 @@ textarea::-webkit-scrollbar {
   }
   .split-container .word-count {
     text-align: center;
+  }
+}
+
+/* Điều chỉnh .punctuation-item cho mobile (max-width: 600px) */
+@media (max-width: 600px) {
+  .punctuation-item {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .punctuation-item input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .punctuation-item button {
+    width: 100%;
+    box-sizing: border-box;
   }
 }
 
