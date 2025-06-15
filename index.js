@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
       logoutText: 'Đăng xuất',
       loading: 'Đang tải...',
       accountDeactivated: 'Tài khoản đã bị vô hiệu hóa.',
-      updateAvailable: 'trinhhg.github.io cho biết: Trang đã có phiên bản mới. Bấm "Tải lại" hoặc nhấn F5 để cập nhật.',
+      updateAvailable: 'Trinovavers cho biết: Trang đã có phiên bản mới. Bấm "Tải lại" hoặc nhấn F5 để cập nhật.',
       reloadButton: 'Tải lại'
     }
   };
@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Tiêu đề
     const title = document.createElement('h3');
-    title.textContent = 'Thông báo từ trinhhg.github.io';
+    title.textContent = 'Thông báo từ TRINOVAVERS';
     title.style.margin = '0 0 10px 0';
     dialog.appendChild(title);
 
@@ -367,7 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Kiểm tra phiên bản mới từ version.json
   async function checkVersionLoop() {
     try {
-      const baseURL = 'https://trinhhg.github.io/test';
+      const baseURL = 'https://trinhhg.github.io/tienichtrinhhg';
 
       // Fetch version.json
       const versionResponse = await fetch(`${baseURL}/version.json?${Date.now()}`, {
